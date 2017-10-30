@@ -1,0 +1,45 @@
+general:
+  branches:
+    ignore:
+      - master
+
+machine:
+  pre:
+    - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
+  services:
+    - docker
+  node:
+    version: 6.5.0
+  environment:
+    AWS_ACCOUNT_ID: 886403637725
+    APP_NAME: forensic-logging-sidecar
+    DOCKER_IMAGE: leveloneproject/$APP_NAME
+    AWS_REGION: us-west-2
+    BUCKET: elasticbeanstalk-$AWS_REGION-$AWS_ACCOUNT_ID
+    INTG_TEST_CMD: tape 'test/integration/**/*.test.js' | tap-xunit > ./test/results/tape-integration.xml
+
+dependencies:
+  pre:
+    - sudo rm -f /usr/local/bin/docker-compose
+    - sudo pip install docker-compose==1.8.1
+    - curl -udwolla:$NPM_TOKEN "https://modusbox.jfrog.io/modusbox/api/npm/level1-npm-release/auth/leveloneproject" >> .npmrc
+  post:
+    - docker build -t $DOCKER_IMAGE .
+
+test:
+  pre:
+    - mkdir -p ./test/results
+  override:
+    - set -o pipefail && npm -s run test:xunit > ./test/results/tape.xml
+    - npm -s run test:coverage-check
+    - npm -s run test:integration
+  post:
+    - cp ./test/results/* $CIRCLE_TEST_REPORTS
+    - mv ./coverage $CIRCLE_ARTIFACTS
+
+deployment:
+  dev:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    commands:
+      - node deploy/node/index.js
+      - aws s3 cp $CIRCLE_ARTIFACTS/coverage/lcov.info s3://$BUCKET/sonar/$APP_NAME/lcov.info
