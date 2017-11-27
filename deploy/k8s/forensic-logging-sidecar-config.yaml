@@ -3,6 +3,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: forensic-logging-sidecar-config
+  labels:
+      app: forensic-logging-sidecar
 data:
   ## The name for the sidecar service. Default: TestService
   # sidecar.name: "TestService"
