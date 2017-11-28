@@ -9,7 +9,7 @@ data:
   ## The name for the sidecar service. Default: TestService
   # sidecar.name: "TestService"
   ## The port the sidecar server will run on. Default: 5678
-  sidecar.port: "8080"
+  sidecar.port: "5678"
   ## The message batch size. Default: 64
   # sidecar.batch.side: 64
   # The url for the KMS. Default: ws://localhost:8080/sidecar

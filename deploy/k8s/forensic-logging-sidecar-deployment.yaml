@@ -26,6 +26,10 @@
             #      value: Awesome
             #   initialDelaySeconds: 30
             #   periodSeconds: 3
+            securityContext:
+              capabilities:
+                add:
+                  - NET_ADMIN
             env:
               - name: SIDE_PORT
                 valueFrom:
