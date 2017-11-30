@@ -1,4 +1,4 @@
-## execute helm install --name forensic-logging-sidecar -f ./central-ledger-helm-postgresql-values.yaml stable/postgresql
+## execute helm install --name forensic-logging-sidecar -f ./forensic-logging-sidecar-helm-postgresql-values.yaml stable/postgresql
 
 ## postgres image repository
 image: "postgres"
