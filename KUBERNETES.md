@@ -22,24 +22,24 @@
     `helm init` <-- this only needs to be done once
 
 8. Deploy Ingress
-    `minikube addon ingress enable`
+    `minikube addon enable ingress`
 
 9. Configure PostgreSQL
-    Edit `postgresUser` & `postgresPassword` as desired in the follow file `./k8s/forensic-logging-sidecar-helm-postgresql-values.yaml` 
+    Edit `postgresUser` & `postgresPassword` as desired in the follow file `./deploy/helm/forensic-logging-sidecar-helm-postgresql-values.yaml` 
 
 10. Deploy PosgreSQL
-    `helm install --name forensic-logging-sidecar -f ./k8s/central-kms-helm-postgresql-values.yaml stable/postgresql`
+    `helm install --name forensic-logging-sidecar -f ./deploy/helm/central-kms-helm-postgresql-values.yaml stable/postgresql`
 
 11. Configure credentials in the forensic-logging-sidecar
-    Edit `db.uri` with the details from step 10 above in the following file `./k8s/forensic-logging-sidecar-secret.yaml`. 
+    Edit `db.uri` with the details from step 10 above in the following file `./deploy/k8s/forensic-logging-sidecar-secret.yaml`. 
     
     Ensure the values are base64 encoded.
 
 12. Deploy Central-kms
-    `kubectl create -f ./k8s`
+    `kubectl create -f ./deploy/k8s`
 
     Or alternatively you can stipulate a namespace for deployment
-    `kubectl -n dev create -f ./k8s`
+    `kubectl -n dev create -f ./deploy/k8s`
 
 13. Add the following to your hosts file
 `<IP>	central-kms.local`
