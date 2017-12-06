@@ -1,0 +1,48 @@
+---
+ apiVersion: extensions/v1beta1
+ kind: Deployment
+ metadata:
+    name: forensic-logging-sidecar-deployment
+    labels:
+      app: forensic-logging-sidecar
+ spec:
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          app: forensic-logging-sidecar
+      spec:
+        containers:
+          - name: forensic-logging-sidecar
+            image: mojaloop/forensic-logging-sidecar:latest
+            ports:
+              - containerPort: 5678
+            # livenessProbe:
+            #   httpGet:
+            #     path: /health
+            #     port: 8080
+            #     httpHeaders:
+            #     - name: X-Custom-Header
+            #      value: Awesome
+            #   initialDelaySeconds: 30
+            #   periodSeconds: 3
+            securityContext:
+              capabilities:
+                add:
+                  - NET_ADMIN
+            env:
+              - name: SIDE_PORT
+                valueFrom:
+                  configMapKeyRef:
+                    name: forensic-logging-sidecar-config
+                    key: sidecar.port
+              - name: SIDE_KMS__URL
+                valueFrom:
+                  configMapKeyRef:
+                    name: forensic-logging-sidecar-config
+                    key: kms.uri
+              - name: SIDE_DATABASE_URI
+                valueFrom:
+                  secretKeyRef:
+                    name: forensic-logging-sidecar-secret
+                    key: db.uri

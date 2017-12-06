@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: forensic-logging-sidecar
+  labels:
+      app: forensic-logging-sidecar
+spec:
+  ports:
+    - port: 5678
+      targetPort: 5678
+      name: tcp-websocket
+      protocol: TCP
+  selector:
+    app: forensic-logging-sidecar

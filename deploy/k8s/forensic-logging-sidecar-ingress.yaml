@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: forensic-logging-sidecar
+  labels:
+      app: forensic-logging-sidecar
+spec:
+  rules:
+    - host: forensic-logging-sidecar.local
+      http:
+        paths:
+        - backend:
+            serviceName: forensic-logging-sidecar
+            servicePort: 5678
