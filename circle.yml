@@ -13,7 +13,7 @@ machine:
   environment:
     AWS_ACCOUNT_ID: 886403637725
     APP_NAME: forensic-logging-sidecar
-    DOCKER_IMAGE: leveloneproject/$APP_NAME
+    DOCKER_IMAGE: mojaloop/$APP_NAME
     AWS_REGION: us-west-2
     BUCKET: elasticbeanstalk-$AWS_REGION-$AWS_ACCOUNT_ID
     INTG_TEST_CMD: tape 'test/integration/**/*.test.js' | tap-xunit > ./test/results/tape-integration.xml
@@ -22,7 +22,7 @@ dependencies:
   pre:
     - sudo rm -f /usr/local/bin/docker-compose
     - sudo pip install docker-compose==1.8.1
-    - curl -udwolla:$NPM_TOKEN "https://modusbox.jfrog.io/modusbox/api/npm/level1-npm-release/auth/leveloneproject" >> .npmrc
+    - echo "https://registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
   post:
     - docker build -t $DOCKER_IMAGE .
 
