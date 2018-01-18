@@ -40,3 +40,10 @@ Dockerfile.old
 .node_repl_history
 
 .vs_code
+
+# --------------- #
+# IntelliJ #
+# --------------- #
+.idea/
+
+package-lock.json

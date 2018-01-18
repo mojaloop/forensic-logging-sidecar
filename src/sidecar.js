@@ -12,6 +12,7 @@ const EventService = require('./domain/event')
 const BatchService = require('./domain/batch')
 const BatchTracker = require('./domain/batch/tracker')
 const SidecarService = require('./domain/sidecar')
+const Hapi = require('hapi')
 
 class Sidecar extends EventEmitter {
   constructor (settings) {
@@ -41,6 +42,7 @@ class Sidecar extends EventEmitter {
     return this._saveSidecar()
       .then(() => this._connectToKms())
       .then(() => this._socketListener.listen(this.port))
+      .then(() => this._startHealthCheck())
   }
 
   stop () {
@@ -53,6 +55,22 @@ class Sidecar extends EventEmitter {
     this.id = Uuid()
     this.startTime = Moment.utc()
     this._sequence = 0
+  }
+
+  _startHealthCheck () {
+    const server = new Hapi.Server()
+    server.connection({
+      port: 6789
+    })
+    Logger.info('starting server')
+    server.route({
+      method: 'GET',
+      path: '/health',
+      handler: function (request, reply) {
+        return reply({ status: 'OK' })
+      }
+    })
+    server.start()
   }
 
   _saveSidecar () {
