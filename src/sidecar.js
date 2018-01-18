@@ -21,6 +21,7 @@ class Sidecar extends EventEmitter {
     this._initialize()
 
     this.port = settings.port
+    this.health_port = settings.health_port
     this.service = settings.serviceName
     this.version = settings.version
 
@@ -60,13 +61,14 @@ class Sidecar extends EventEmitter {
   _startHealthCheck () {
     const server = new Hapi.Server()
     server.connection({
-      port: 6789
+      port: this.health_port
     })
-    Logger.info('starting server')
+    Logger.info('Starting health server')
     server.route({
       method: 'GET',
       path: '/health',
       handler: function (request, reply) {
+        Logger.info('Forensic Logging Sidecar health check')
         return reply({ status: 'OK' })
       }
     })

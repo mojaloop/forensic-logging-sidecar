@@ -28,6 +28,7 @@ const startSidecar = () => {
 const buildSidecarSettings = () => {
   return {
     port: Config.PORT,
+    health_port: Config.HEALTH_PORT,
     serviceName: Config.SERVICE,
     batchSize: Config.BATCH_SIZE,
     batchTimeInterval: Config.BATCH_TIME_INTERVAL,
