@@ -27,7 +27,7 @@
     "test:all": "npm test && npm run test:integration",
     "test:unit": "tape 'test/unit/**/*.test.js'",
     "test:xunit": "npm run test:unit | tap-xunit",
-    "test:coverage": "istanbul cover tape -- 'test/unit/**/*.test.js'",
+    "test:coverage": "istanbul cover tape -- 'test/unit/**/*.test.js' | faucet",
     "test:coverage-check": "npm run test:coverage && istanbul check-coverage",
     "test:integration": "./test/integration-runner.sh .env",
     "migrate": "knex migrate:latest $npm_package_config_knex",

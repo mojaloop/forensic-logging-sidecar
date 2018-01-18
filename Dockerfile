@@ -16,5 +16,4 @@ RUN apk add --no-cache make gcc g++ python && \
 EXPOSE 5678
 EXPOSE 6789
 
-# ENTRYPOINT ["/opt/sidecar/server.sh"]
-CMD ["sh", "-c","\"while :; do sleep 10; done\""]
+CMD ["/opt/sidecar/server.sh"]
