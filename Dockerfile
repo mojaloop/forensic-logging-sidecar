@@ -5,7 +5,7 @@ WORKDIR /opt/sidecar
 COPY src /opt/sidecar/src
 COPY migrations /opt/sidecar/migrations
 COPY config /opt/sidecar/config
-COPY package.json .npmrc server.sh /opt/sidecar/
+COPY package.json server.sh /opt/sidecar/
 
 RUN apk add --no-cache make gcc g++ python && \
     apk add -U iproute2 && ln -s /usr/lib/tc /lib/tc && \
