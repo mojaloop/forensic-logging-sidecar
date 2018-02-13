@@ -13,7 +13,11 @@
     "logging"
   ],
   "config": {
-    "knex": "--knexfile ./config/knexfile.js"
+    "knex": "--knexfile ./config/knexfile.js",
+    "images": {
+      "api": "central-ledger",
+      "admin": "central-ledger-admin"
+    }
   },
   "standard": {
     "ignore": [
@@ -29,11 +33,23 @@
     "test:xunit": "npm run test:unit | tap-xunit",
     "test:coverage": "istanbul cover tape -- 'test/unit/**/*.test.js'",
     "test:coverage-check": "npm run test:coverage && istanbul check-coverage",
-    "test:integration": "./test/integration-runner.sh ./test/.env",
+    "test:integration": "./test/integration-runner.sh test/integration_runner.env",
     "migrate": "knex migrate:latest $npm_package_config_knex",
     "migrate:create": "knex migrate:make $npm_package_config_knex",
     "migrate:rollback": "knex migrate:rollback $npm_package_config_knex",
-    "migrate:current": "knex migrate:currentVersion $npm_package_config_knex"
+    "migrate:current": "knex migrate:currentVersion $npm_package_config_knex",
+    "docker:build": "docker build --no-cache -f Dockerfile -t $npm_package_config_images_api:$npm_package_version .",
+    "docker:build:test": "source test/integration_runner.env; docker build --no-cache -f test.Dockerfile -t $npm_package_config_images_api:test .",
+    "docker:build:snapshot": "docker build --no-cache -f Dockerfile -t $npm_package_config_images_api:snapshot .",
+    "docker:build:latest": "docker build --no-cache -f Dockerfile -t $npm_package_config_images_api:latest .",
+    "docker:push": "docker push $npm_package_config_images_api:$npm_package_version",
+    "docker:push:test": "docker push $npm_package_config_images_api:test",
+    "docker:push:snapshot": "docker push $npm_package_config_images_api:snapshot",
+    "docker:push:latest": "docker push $npm_package_config_images_api:latest",
+    "docker:publish ": "run-s docker:build:version docker:push:version",    
+    "docker:publish:test": "run-s docker:build:test docker:push:test",
+    "docker:publish:snapshot": "run-s docker:build:snapshot docker:push:snapshot",
+    "docker:publish:latest": "run-s docker:build:latest docker:push:latest"
   },
   "dependencies": {
     "@mojaloop/central-services-database": "0.3.0",
@@ -56,6 +72,7 @@
     "faucet": "0.0.1",
     "istanbul": "0.4.5",
     "pre-commit": "1.2.2",
+    "npm-run-all": "4.0.1",
     "proxyquire": "1.8.0",
     "sinon": "2.3.4",
     "standard": "10.0.2",
