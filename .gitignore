@@ -15,6 +15,9 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 
+# Test result directory
+test/results
+
 # nyc test coverage
 .nyc_output
 
@@ -39,4 +42,9 @@ Dockerfile.old
 # Optional REPL history
 .node_repl_history
 
+# VSCode directory
+.vscode
 .vs_code
+
+# npm
+package-lock.json
