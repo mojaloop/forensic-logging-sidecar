@@ -15,4 +15,4 @@ RUN apk add --no-cache make gcc g++ python && \
 
 EXPOSE 5678
 
-ENTRYPOINT ["/opt/sidecar/server.sh"]
+CMD ["/opt/sidecar/server.sh"]

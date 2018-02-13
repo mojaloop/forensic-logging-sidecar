@@ -40,3 +40,6 @@ Dockerfile.old
 .node_repl_history
 
 .vs_code
+
+# npm
+package-lock.json

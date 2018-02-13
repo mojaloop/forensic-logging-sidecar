@@ -29,7 +29,7 @@
     "test:xunit": "npm run test:unit | tap-xunit",
     "test:coverage": "istanbul cover tape -- 'test/unit/**/*.test.js'",
     "test:coverage-check": "npm run test:coverage && istanbul check-coverage",
-    "test:integration": "./test/integration-runner.sh .env",
+    "test:integration": "./test/integration-runner.sh ./test/.env",
     "migrate": "knex migrate:latest $npm_package_config_knex",
     "migrate:create": "knex migrate:make $npm_package_config_knex",
     "migrate:rollback": "knex migrate:rollback $npm_package_config_knex",
