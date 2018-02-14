@@ -22,13 +22,13 @@
     `helm init` <-- this only needs to be done once
 
 8. Deploy Ingress
-    `minikube addon enable ingress`
+    `minikube addons enable ingress`
 
 9. Configure PostgreSQL
     Edit `postgresUser` & `postgresPassword` as desired in the follow file `./deploy/helm/forensic-logging-sidecar-helm-postgresql-values.yaml` 
 
 10. Deploy PosgreSQL
-    `helm install --name forensic-logging-sidecar -f ./deploy/helm/central-kms-helm-postgresql-values.yaml stable/postgresql`
+    `helm install --name forensic-logging-sidecar -f ./deploy/helm/forensic-logging-sidecar-helm-postgresql-values.yaml stable/postgresql`
 
 11. Configure credentials in the forensic-logging-sidecar
     Edit `db.uri` with the details from step 10 above in the following file `./deploy/k8s/forensic-logging-sidecar-secret.yaml`. 

@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/forensic-logging-sidecar",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Sidecar service to save forensic logs",
   "license": "Apache-2.0",
   "repository": {
@@ -36,31 +36,31 @@
     "migrate:current": "knex migrate:currentVersion $npm_package_config_knex"
   },
   "dependencies": {
-    "@mojaloop/central-services-database": "0.3.0",
-    "@mojaloop/central-services-shared": "0.3.0",
+    "@mojaloop/central-services-database": "0.4.0",
+    "@mojaloop/central-services-shared": "0.4.0",
     "bitsyntax": "0.0.4",
     "bluebird": "3.5.0",
-    "moment": "2.18.1",
+    "moment": "2.20.1",
     "node-aes-cmac": "0.1.1",
-    "rc": "1.2.1",
+    "rc": "1.2.5",
     "tweetnacl": "1.0.0",
     "tweetnacl-util": "0.15.0",
     "uuid4": "1.0.0",
-    "ws": "3.0.0"
+    "ws": "4.0.0"
   },
   "optionalDependencies": {
-    "pg": "6.1.5"
+    "pg": "7.4.1"
   },
   "devDependencies": {
-    "aws-sdk": "2.16.0",
+    "aws-sdk": "2.194.0",
     "faucet": "0.0.1",
     "istanbul": "0.4.5",
     "pre-commit": "1.2.2",
     "proxyquire": "1.8.0",
-    "sinon": "2.3.4",
-    "standard": "10.0.2",
-    "tap-xunit": "1.7.0",
-    "tape": "4.6.3",
+    "sinon": "4.3.0",
+    "standard": "10.0.3",
+    "tap-xunit": "2.2.0",
+    "tape": "4.8.0",
     "tapes": "4.1.0"
   }
 }
