@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:6.5.0
+FROM mhart/alpine-node:8.9.4
 USER root
 
 WORKDIR /opt/sidecar
