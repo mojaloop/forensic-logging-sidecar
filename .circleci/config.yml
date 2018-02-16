@@ -121,7 +121,7 @@ jobs:
           command: npm install github:interledgerjs/five-bells-ledger-api-tests
       - run:
           name: Build dependencies
-          command: apk add --no-cache -t build-dependencies make gcc g python libtool autoconf automake
+          command: apk add --no-cache -t build-dependencies make gcc g++ python libtool autoconf automake
       - run:
           name: Access npm folder as root
           command: cd $(npm root -g)/npm
