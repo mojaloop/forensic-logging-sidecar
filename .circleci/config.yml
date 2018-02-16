@@ -6,7 +6,7 @@ defaults_working_directory: &defaults_working_directory
 
 defaults_docker_node: &defaults_docker_node
   docker:
-    - image: circleci/node:8.9.4
+    - image: mhart/alpine-node:8.9.4
 
 defaults_docker_helm_kube: &defaults_docker_helm_kube
   docker:
@@ -120,20 +120,11 @@ jobs:
           name: Install interledgerjs/five-bells-ledger-api-tests
           command: npm install github:interledgerjs/five-bells-ledger-api-tests
       - run:
-          name: Link NPM sodium
-          command: npm link sodium
-      - run:
           name: Build dependencies
           command: apk add --no-cache -t build-dependencies make gcc g python libtool autoconf automake
       - run:
           name: Access npm folder as root
           command: cd $(npm root -g)/npm
-      - run:
-          name: Install fs-extra
-          command: npm install fs-extra
-      - run:
-          name: Edit something
-          command: sed -i -e s/graceful-fs/fs-extra/ -e s/fs.rename/fs.move/ ./lib/utils/rename.js
       - run:
           name: Install node-gyp globally
           command: npm install -g node-gyp
@@ -143,6 +134,9 @@ jobs:
       - run:
           name: Install argon
           command: npm install -g argon2@0.17.1 --unsafe-perm
+      - run:
+          name: Link NPM sodium
+          command: npm link sodium
       - run:
           name: Delete build dependencies
           command: apk del build-dependencies
