@@ -150,7 +150,7 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-       - run:
+      - run:
           name: Install tape, tapes and tap-xunit
           command: npm install -g tape tapes tap-xunit
       - run:
