@@ -2,9 +2,9 @@
 
 >&2 echo "--==== Integration Tests Runner ====--"
 
-if [ $# -ne 1 ]; then 
+if [ $# -ne 1 ]; then
     echo ""
-    echo "Usage: $0 {env-file}" 
+    echo "Usage: $0 {env-file}"
     echo "{env-file} must contain the following variables:"
     echo " - DOCKER_IMAGE: Name of Image"
     echo " - DOCKER_TAG: Tag/Version of Image"
@@ -23,8 +23,8 @@ if [ $# -ne 1 ]; then
     echo ""
     echo " * IMPORTANT: Ensure you have the required env in the test/.env to execute the application"
     echo ""
-    exit 1 
-fi 
+    exit 1
+fi
 >&2 echo ""
 >&2 echo "====== Loading environment variables ======"
 cat $1
@@ -140,17 +140,16 @@ fi
 run_test_command
 test_exit_code=$?
 
-if [ "$test_exit_code" != 0 ]
-then
-  >&2 echo "Integration tests failed...exiting"
-  >&2 echo "Test environment logs..."
-  docker logs $APP_HOST
-  clean_docker
-  exit 1
-fi
+>&2 echo "Displaying test logs"
+docker logs $APP_TEST_HOST
 
 >&2 echo "Copy results to local directory"
 docker cp $APP_HOST:$DOCKER_WORKING_DIR/$APP_DIR_TEST_RESULTS test
+
+if [ "$test_exit_code" != 0 ]
+then
+  >&2 echo "Integration tests failed...exiting"
+fi
 
 clean_docker
 
