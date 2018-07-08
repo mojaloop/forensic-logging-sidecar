@@ -12,10 +12,10 @@ COPY package.json server.sh /opt/sidecar/
 RUN apk add --no-cache make gcc g++ python && \
     apk add -U iproute2 && ln -s /usr/lib/tc /lib/tc && \
     apk add -U iptables && \
-    chmod +x /opt/sidecar/server.sh && \
-    npm install && \
-    npm install -g tape && \
-    npm install -g tap-xunit
+    chmod +x /opt/sidecar/server.sh
+
+RUN npm install -g tape tap-xunit \
+    && npm install
 
 EXPOSE 5678
 
