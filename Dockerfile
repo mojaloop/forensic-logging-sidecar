@@ -14,5 +14,6 @@ RUN apk add --no-cache make gcc g++ python && \
     npm install --production
 
 EXPOSE 5678
+EXPOSE 6789
 
 CMD ["/opt/sidecar/server.sh"]

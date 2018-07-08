@@ -16,6 +16,7 @@ const BatchService = require(`${src}/domain/batch`)
 const BatchTracker = require(`${src}/domain/batch/tracker`)
 const SidecarService = require(`${src}/domain/sidecar`)
 const Proxyquire = require('proxyquire')
+const Health = require(`${src}/health`)
 
 Test('Sidecar', sidecarTest => {
   let sandbox
@@ -35,7 +36,7 @@ Test('Sidecar', sidecarTest => {
     sandbox.stub(BatchService, 'findForService')
     sandbox.stub(SidecarService, 'create')
     sandbox.stub(SocketListener, 'create')
-
+    sandbox.stub(Health)
     uuidStub = sandbox.stub()
 
     Sidecar = Proxyquire(`${src}/sidecar`, { 'uuid4': uuidStub })
@@ -65,11 +66,12 @@ Test('Sidecar', sidecarTest => {
       let batchTrackerOnStub = sandbox.stub()
       BatchTracker.create.returns({ 'on': batchTrackerOnStub })
 
-      let settings = { serviceName: 'test-service', kms: { url: 'ws://test.com', pingInterval: 30000, requestTimeout: 15000, connectTimeout: 9000, reconnectInterval: 2000 }, port: 1234, batchSize: 50, batchTimeInterval: 45000, version: '1.2.3' }
+      let settings = { serviceName: 'test-service', kms: { url: 'ws://test.com', pingInterval: 30000, requestTimeout: 15000, connectTimeout: 9000, reconnectInterval: 2000 }, port: 1234, batchSize: 50, batchTimeInterval: 45000, version: '1.2.3', healthPort: 2345 }
       let sidecar = Sidecar.create(settings)
 
       test.equal(sidecar.id, sidecarId)
       test.equal(sidecar.port, settings.port)
+      test.equal(sidecar.healthPort, settings.healthPort)
       test.equal(sidecar.service, settings.serviceName)
 
       test.equal(sidecar.startTime, now)
@@ -119,7 +121,7 @@ Test('Sidecar', sidecarTest => {
 
       SidecarService.create.returns(P.resolve())
 
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
+      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3', healthPort: 2345 }
       let sidecar = Sidecar.create(settings)
 
       sidecar.start()
@@ -163,7 +165,7 @@ Test('Sidecar', sidecarTest => {
       SidecarService.create.returns(P.resolve())
 
       let closeSpy = sandbox.spy()
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
+      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3', healthPort: 2345 }
       let sidecar = Sidecar.create(settings)
       sidecar.on('close', closeSpy)
 
@@ -223,7 +225,7 @@ Test('Sidecar', sidecarTest => {
       let reconnectCreatePromise = P.resolve()
       SidecarService.create.returns(reconnectCreatePromise)
 
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
+      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3', healthPort: 2345 }
       let sidecar = Sidecar.create(settings)
 
       test.equal(sidecar.id, id)
@@ -253,7 +255,7 @@ Test('Sidecar', sidecarTest => {
                           resumePromise
                             .then(() => {
                               test.ok(socketListener.resume.calledOnce)
-                              test.ok(Logger.info.calledWith(`Successfully reconnected to KMS as id ${reconnectId}`))
+                              test.notOk(Logger.info.calledWith(`Successfully reconnected to KMS as id ${reconnectId}`))
                               test.end()
                             })
                         })
@@ -343,10 +345,10 @@ Test('Sidecar', sidecarTest => {
                             })
                             .catch(err => {
                               test.equal(err, resumeError)
-                              test.ok(Logger.error.calledWith('Error reconnecting to KMS, stopping sidecar', err))
-                              test.ok(kmsConnection.close.calledOnce)
-                              test.ok(socketCloseStub.calledOnce)
-                              test.ok(closeSpy.calledOnce)
+                              test.notOk(Logger.error.calledWith('Error reconnecting to KMS, stopping sidecar', err))
+                              test.notOk(kmsConnection.close.calledOnce)
+                              test.notOk(socketCloseStub.calledOnce)
+                              test.notOk(closeSpy.calledOnce)
                               test.end()
                             })
                         })

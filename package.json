@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/forensic-logging-sidecar",
-  "version": "0.14.0",
+  "version": "2.0.0-snapshot",
   "description": "Sidecar service to save forensic logs",
   "license": "Apache-2.0",
   "repository": {
@@ -31,7 +31,7 @@
     "test:all": "npm test && npm run test:integration",
     "test:unit": "tape 'test/unit/**/*.test.js'",
     "test:xunit": "npm run test:unit | tap-xunit",
-    "test:coverage": "istanbul cover tape -- 'test/unit/**/*.test.js'",
+    "test:coverage": "istanbul cover tape -- 'test/unit/**/*.test.js' | faucet",
     "test:coverage-check": "npm run test:coverage && istanbul check-coverage",
     "test:integration": "./test/integration-runner.sh test/integration_runner.env",
     "migrate": "knex migrate:latest $npm_package_config_knex",
@@ -56,6 +56,7 @@
     "@mojaloop/central-services-shared": "0.4.0",
     "bitsyntax": "0.0.4",
     "bluebird": "3.5.0",
+    "hapi": "16.1.1",
     "moment": "2.20.1",
     "node-aes-cmac": "0.1.1",
     "rc": "1.2.5",

@@ -1,12 +1,13 @@
 {
   "PORT": 5678,
+  "HEALTH_PORT": 6789,
   "SERVICE": "TestService",
   "BATCH_SIZE": 64,
   "BATCH_TIME_INTERVAL": 300000,
   "KMS": {
     "URL": "ws://localhost:8080/sidecar",
     "PING_INTERVAL": 30000,
-    "REQUEST_TIMEOUT": 30000,
+    "REQUEST_TIMEOUT": 120000,
     "CONNECT_TIMEOUT": 60000,
     "RECONNECT_INTERVAL": 5000
   }
