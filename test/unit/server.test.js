@@ -15,6 +15,7 @@ const Package = require('../../package')
 Test('Server', serverTest => {
   let sandbox
   let oldPort
+  let oldHealthPort
   let oldService
   let oldBatchSize
   let oldKmsConfig
@@ -23,6 +24,7 @@ Test('Server', serverTest => {
   let port = 1234
   let batchSize = 5
   let batchTimeInterval = 30000
+  let healthPort = 2345
   let service = 'MyService'
   let kmsConfig = { 'URL': 'ws://test.com', 'PING_INTERVAL': 10000, 'REQUEST_TIMEOUT': 15000, 'CONNECT_TIMEOUT': 8000, 'RECONNECT_INTERVAL': 2000 }
   let databaseUri = 'some-database-uri'
@@ -36,6 +38,7 @@ Test('Server', serverTest => {
     sandbox.stub(Logger)
 
     oldPort = Config.PORT
+    oldHealthPort = Config.HEALTH_PORT
     oldKmsConfig = Config.KMS
     oldService = Config.SERVICE
     oldBatchSize = Config.BATCH_SIZE
@@ -43,6 +46,7 @@ Test('Server', serverTest => {
     oldBatchTimeInterval = Config.BATCH_TIME_INTERVAL
 
     Config.PORT = port
+    Config.HEALTH_PORT = healthPort
     Config.KMS = kmsConfig
     Config.SERVICE = service
     Config.BATCH_SIZE = batchSize
@@ -58,6 +62,7 @@ Test('Server', serverTest => {
     Config.BATCH_SIZE = oldBatchSize
     Config.KMS = oldKmsConfig
     Config.PORT = oldPort
+    Config.HEALTH_PORT = oldHealthPort
     Config.SERVICE = oldService
     Config.DATABASE_URI = oldDatabaseUri
     Config.BATCH_TIME_INTERVAL = oldBatchTimeInterval
@@ -76,6 +81,7 @@ Test('Server', serverTest => {
       sidecar.id = 'id'
       sidecar.service = 'test-service'
       sidecar.port = 1234
+      sidecar.healthPort = 2345
       sidecar.start = startStub
       Sidecar.create.returns(sidecar)
 
@@ -88,6 +94,7 @@ Test('Server', serverTest => {
         test.ok(Sidecar.create.calledOnce)
         test.ok(Sidecar.create.calledWith(sandbox.match({
           port,
+          healthPort: healthPort,
           serviceName: service,
           kms: {
             url: kmsConfig.URL,

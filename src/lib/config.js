@@ -2,6 +2,7 @@ const RC = require('rc')('SIDE', require('../../config/default.json'))
 
 module.exports = {
   PORT: RC.PORT,
+  HEALTH_PORT: RC.HEALTH_PORT,
   SERVICE: RC.SERVICE,
   BATCH_SIZE: RC.BATCH_SIZE,
   BATCH_TIME_INTERVAL: RC.BATCH_TIME_INTERVAL,

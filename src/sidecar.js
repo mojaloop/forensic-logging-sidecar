@@ -12,6 +12,7 @@ const EventService = require('./domain/event')
 const BatchService = require('./domain/batch')
 const BatchTracker = require('./domain/batch/tracker')
 const SidecarService = require('./domain/sidecar')
+const Health = require('./health')
 
 class Sidecar extends EventEmitter {
   constructor (settings) {
@@ -20,9 +21,9 @@ class Sidecar extends EventEmitter {
     this._initialize()
 
     this.port = settings.port
+    this.healthPort = settings.healthPort
     this.service = settings.serviceName
     this.version = settings.version
-
     this._keyStore = Keys.create()
 
     this._kmsConnection = KmsConnection.create(settings.kms)
@@ -41,6 +42,7 @@ class Sidecar extends EventEmitter {
     return this._saveSidecar()
       .then(() => this._connectToKms())
       .then(() => this._socketListener.listen(this.port))
+      .then(() => Health.create(this.healthPort))
   }
 
   stop () {
@@ -72,6 +74,7 @@ class Sidecar extends EventEmitter {
       .then(() => this._saveSidecar())
       .then(() => this._connectToKms())
       .then(() => this._socketListener.resume())
+      .then(() => Health.create(this.healthPort))
   }
 
   _onKmsInquiry (request) {
