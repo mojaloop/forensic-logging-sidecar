@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/forensic-logging-sidecar",
-  "version": "0.13.0",
+  "version": "2.0.0-snapshot",
   "description": "Sidecar service to save forensic logs",
   "license": "Apache-2.0",
   "repository": {
@@ -13,7 +13,11 @@
     "logging"
   ],
   "config": {
-    "knex": "--knexfile ./config/knexfile.js"
+    "knex": "--knexfile ./config/knexfile.js",
+    "images": {
+      "api": "central-ledger",
+      "admin": "central-ledger-admin"
+    }
   },
   "standard": {
     "ignore": [
@@ -27,40 +31,54 @@
     "test:all": "npm test && npm run test:integration",
     "test:unit": "tape 'test/unit/**/*.test.js'",
     "test:xunit": "npm run test:unit | tap-xunit",
-    "test:coverage": "istanbul cover tape -- 'test/unit/**/*.test.js'",
+    "test:coverage": "istanbul cover tape -- 'test/unit/**/*.test.js' | faucet",
     "test:coverage-check": "npm run test:coverage && istanbul check-coverage",
-    "test:integration": "./test/integration-runner.sh .env",
+    "test:integration": "./test/integration-runner.sh test/integration_runner.env",
     "migrate": "knex migrate:latest $npm_package_config_knex",
     "migrate:create": "knex migrate:make $npm_package_config_knex",
     "migrate:rollback": "knex migrate:rollback $npm_package_config_knex",
-    "migrate:current": "knex migrate:currentVersion $npm_package_config_knex"
+    "migrate:current": "knex migrate:currentVersion $npm_package_config_knex",
+    "docker:build": "docker build --no-cache -f Dockerfile -t $npm_package_config_images_api:$npm_package_version .",
+    "docker:build:test": "source test/integration_runner.env; docker build --no-cache -f test.Dockerfile -t $npm_package_config_images_api:test .",
+    "docker:build:snapshot": "docker build --no-cache -f Dockerfile -t $npm_package_config_images_api:snapshot .",
+    "docker:build:latest": "docker build --no-cache -f Dockerfile -t $npm_package_config_images_api:latest .",
+    "docker:push": "docker push $npm_package_config_images_api:$npm_package_version",
+    "docker:push:test": "docker push $npm_package_config_images_api:test",
+    "docker:push:snapshot": "docker push $npm_package_config_images_api:snapshot",
+    "docker:push:latest": "docker push $npm_package_config_images_api:latest",
+    "docker:publish ": "run-s docker:build:version docker:push:version",    
+    "docker:publish:test": "run-s docker:build:test docker:push:test",
+    "docker:publish:snapshot": "run-s docker:build:snapshot docker:push:snapshot",
+    "docker:publish:latest": "run-s docker:build:latest docker:push:latest"
   },
   "dependencies": {
-    "@mojaloop/central-services-database": "0.3.0",
-    "@mojaloop/central-services-shared": "0.3.0",
+    "@mojaloop/central-services-database": "0.4.0",
+    "@mojaloop/central-services-shared": "0.4.0",
     "bitsyntax": "0.0.4",
     "bluebird": "3.5.0",
-    "moment": "2.18.1",
+    "hapi": "16.1.1",
+    "moment": "2.20.1",
     "node-aes-cmac": "0.1.1",
-    "rc": "1.2.1",
+    "rc": "1.2.5",
     "tweetnacl": "1.0.0",
     "tweetnacl-util": "0.15.0",
     "uuid4": "1.0.0",
-    "ws": "3.0.0"
+    "ws": "4.0.0"
   },
   "optionalDependencies": {
-    "pg": "6.1.5"
+    "pg": "7.4.1"
   },
   "devDependencies": {
-    "aws-sdk": "2.16.0",
+    "aws-sdk": "2.194.0",
     "faucet": "0.0.1",
     "istanbul": "0.4.5",
     "pre-commit": "1.2.2",
+    "npm-run-all": "4.0.1",
     "proxyquire": "1.8.0",
-    "sinon": "2.3.4",
-    "standard": "10.0.2",
-    "tap-xunit": "1.7.0",
-    "tape": "4.6.3",
+    "sinon": "4.3.0",
+    "standard": "10.0.3",
+    "tap-xunit": "2.2.0",
+    "tape": "4.8.0",
     "tapes": "4.1.0"
   }
 }
