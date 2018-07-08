@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/forensic-logging-sidecar",
-  "version": "0.14.0",
+  "version": "2.0.0-snapshot",
   "description": "Sidecar service to save forensic logs",
   "license": "Apache-2.0",
   "repository": {
