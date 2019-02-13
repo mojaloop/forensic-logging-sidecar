@@ -22,7 +22,7 @@ class Health extends EventEmitter {
       path: '/health',
       handler: function (request, reply) {
         Logger.info('Forensic Logging Sidecar health check')
-        return reply({status: 'OK'})
+        return reply({ status: 'OK' })
       }
     })
     this.server.start((err) => {

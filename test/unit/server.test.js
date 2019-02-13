@@ -86,31 +86,31 @@ Test('Server', serverTest => {
       Sidecar.create.returns(sidecar)
 
       require('../../src/server')
-      .then(() => {
-        test.ok(Migrator.migrate.calledOnce)
-        test.ok(Migrator.migrate.calledBefore(Db.connect))
-        test.ok(Db.connect.calledOnce)
-        test.ok(Db.connect.calledWith(databaseUri))
-        test.ok(Sidecar.create.calledOnce)
-        test.ok(Sidecar.create.calledWith(sandbox.match({
-          port,
-          healthPort: healthPort,
-          serviceName: service,
-          kms: {
-            url: kmsConfig.URL,
-            pingInterval: kmsConfig.PING_INTERVAL,
-            requestTimeout: kmsConfig.REQUEST_TIMEOUT,
-            connectTimeout: kmsConfig.CONNECT_TIMEOUT,
-            reconnectInterval: kmsConfig.RECONNECT_INTERVAL
-          },
-          version: Package.version,
-          batchSize,
-          batchTimeInterval
-        })))
-        test.ok(startStub.calledOnce)
-        test.ok(Logger.info.calledWith(`Sidecar ${sidecar.id} for ${sidecar.service} connected to KMS and listening for messages on port ${sidecar.port}`))
-        test.end()
-      })
+        .then(() => {
+          test.ok(Migrator.migrate.calledOnce)
+          test.ok(Migrator.migrate.calledBefore(Db.connect))
+          test.ok(Db.connect.calledOnce)
+          test.ok(Db.connect.calledWith(databaseUri))
+          test.ok(Sidecar.create.calledOnce)
+          test.ok(Sidecar.create.calledWith(sandbox.match({
+            port,
+            healthPort: healthPort,
+            serviceName: service,
+            kms: {
+              url: kmsConfig.URL,
+              pingInterval: kmsConfig.PING_INTERVAL,
+              requestTimeout: kmsConfig.REQUEST_TIMEOUT,
+              connectTimeout: kmsConfig.CONNECT_TIMEOUT,
+              reconnectInterval: kmsConfig.RECONNECT_INTERVAL
+            },
+            version: Package.version,
+            batchSize,
+            batchTimeInterval
+          })))
+          test.ok(startStub.calledOnce)
+          test.ok(Logger.info.calledWith(`Sidecar ${sidecar.id} for ${sidecar.service} connected to KMS and listening for messages on port ${sidecar.port}`))
+          test.end()
+        })
     })
 
     setupTest.test('cleanup and rethrow on error', test => {
@@ -127,16 +127,16 @@ Test('Server', serverTest => {
       Sidecar.create.returns(sidecar)
 
       require('../../src/server')
-      .then(() => {
-        test.fail('Should have thrown error')
-        test.end()
-      })
-      .catch(err => {
-        test.ok(Logger.error.calledWith('Fatal error thrown by sidecar', error))
-        test.ok(Db.disconnect.calledOnce)
-        test.equal(err, error)
-        test.end()
-      })
+        .then(() => {
+          test.fail('Should have thrown error')
+          test.end()
+        })
+        .catch(err => {
+          test.ok(Logger.error.calledWith('Fatal error thrown by sidecar', error))
+          test.ok(Db.disconnect.calledOnce)
+          test.equal(err, error)
+          test.end()
+        })
     })
 
     setupTest.test('handle sidecar close event', test => {

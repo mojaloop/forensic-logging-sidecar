@@ -116,12 +116,12 @@ class KmsConnection extends EventEmitter {
     return this._pendingRequests.start(id => {
       this._send({ id, method, params })
     })
-    .then(response => {
-      if (response.error) {
-        return P.reject(new Errors.KmsResponseError(response.error.id, response.error.message))
-      }
-      return response.result
-    })
+      .then(response => {
+        if (response.error) {
+          return P.reject(new Errors.KmsResponseError(response.error.id, response.error.message))
+        }
+        return response.result
+      })
   }
 
   respond (requestId, result) {
