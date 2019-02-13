@@ -53,4 +53,3 @@ Dockerfile.old
 **/*.iml
 
 # npm
-package-lock.json
