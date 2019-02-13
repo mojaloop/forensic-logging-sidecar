@@ -126,6 +126,9 @@ jobs:
           name: Build dependencies
           command: apk add --no-cache -t build-dependencies make gcc g++ python libtool autoconf automake
       - run:
+          name: Update NPM install
+          command: npm install
+      - run:
           name: Delete build dependencies
           command: apk del build-dependencies
       - save_cache:
