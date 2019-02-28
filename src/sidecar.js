@@ -42,7 +42,7 @@ class Sidecar extends EventEmitter {
     return this._saveSidecar()
       .then(() => this._connectToKms())
       .then(() => this._socketListener.listen(this.port))
-      .then(() => Health.create(this.healthPort))
+      .then(() => Health.createServer(this.healthPort))
   }
 
   stop () {
@@ -74,7 +74,7 @@ class Sidecar extends EventEmitter {
       .then(() => this._saveSidecar())
       .then(() => this._connectToKms())
       .then(() => this._socketListener.resume())
-      .then(() => Health.create(this.healthPort))
+      .then(() => Health.createServer(this.healthPort))
   }
 
   _onKmsInquiry (request) {

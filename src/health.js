@@ -2,38 +2,34 @@
 
 const Hapi = require('hapi')
 const Logger = require('@mojaloop/central-services-shared').Logger
-const EventEmitter = require('events')
+const ErrorHandling = require('@mojaloop/central-services-error-handling')
 
-class Health extends EventEmitter {
-  constructor (port) {
-    super()
-    this.server = new Hapi.Server()
-    this.healthPort = port
-    this._startHealthCheck()
-  }
+const createServer = async (port) => {
+  const server = await new Hapi.Server({
+    port,
+    routes: {
+      validate: {
+        options: ErrorHandling.validateRoutes()
+      }
+    }
+  })
 
-  _startHealthCheck () {
-    this.server.connection({
-      port: this.healthPort
-    })
-    Logger.info('Starting health server')
-    this.server.route({
-      method: 'GET',
-      path: '/health',
+  await server.route({
+    method: 'GET',
+    path: '/health',
+    config: {
       handler: function (request, reply) {
         Logger.info('Forensic Logging Sidecar health check')
-        return reply({ status: 'OK' })
+        return reply.response({ status: 'OK' })
       }
-    })
-    this.server.start((err) => {
-      if (err) {
-        throw err
-      }
-      Logger.info('Server running at:', this.server.info.uri)
-    })
-  }
+    }
+  })
+
+  await server.start()
+  Logger.info('Server running at: ', server.info.uri)
+  return server
 }
 
-exports.create = (port) => {
-  return new Health(port)
+module.exports = {
+  createServer
 }

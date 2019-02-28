@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/forensic-logging-sidecar",
-  "version": "5.1.0",
+  "version": "5.2.1",
   "description": "Sidecar service to save forensic logs",
   "license": "Apache-2.0",
   "repository": {
@@ -46,13 +46,14 @@
     "docker:push:test": "docker push $npm_package_config_images_api:test",
     "docker:push:snapshot": "docker push $npm_package_config_images_api:snapshot",
     "docker:push:latest": "docker push $npm_package_config_images_api:latest",
-    "docker:publish ": "run-s docker:build:version docker:push:version",    
+    "docker:publish ": "run-s docker:build:version docker:push:version",
     "docker:publish:test": "run-s docker:build:test docker:push:test",
     "docker:publish:snapshot": "run-s docker:build:snapshot docker:push:snapshot",
     "docker:publish:latest": "run-s docker:build:latest docker:push:latest"
   },
   "dependencies": {
     "@mojaloop/central-services-database": "0.4.0",
+    "@mojaloop/central-services-error-handling": "5.2.0",
     "@mojaloop/central-services-shared": "0.4.0",
     "bitsyntax": "0.1.0",
     "bluebird": "3.5.3",
@@ -71,7 +72,7 @@
   "devDependencies": {
     "aws-sdk": "2.401.0",
     "faucet": "0.0.1",
-    "istanbul": "0.4.5",
+    "istanbul": "1.1.0-alpha.1",
     "pre-commit": "1.2.2",
     "npm-run-all": "4.1.5",
     "proxyquire": "2.1.0",
