@@ -1,7 +1,7 @@
 {
   "name": "@mojaloop/forensic-logging-sidecar",
   "version": "5.3.0",
-  "description": "Sidecar service to save forensic logs",
+  "description": "Sidecar service to save forensic logs.",
   "license": "Apache-2.0",
   "contributors": [
     "Henk Kodde <henk.kodde@modusbox.com>"
