@@ -334,8 +334,8 @@ jobs:
           <<: *defaults_build_docker_build
       - run:
           <<: *defaults_build_docker_publish
-            - run:
-                <<: *defaults_slack_announcement
+      - run:
+          <<: *defaults_slack_announcement
 
   deploy-snapshot:
     <<: *defaults_working_directory
