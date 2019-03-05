@@ -1,5 +1,11 @@
 # Forensic Logging Sidecar
 
+[![Git Commit](https://img.shields.io/github/last-commit/mojaloop/forensic-logging-sidecar.svg?style=flat)](https://github.com/mojaloop/forensic-logging-sidecar/commits/master)
+[![Git Releases](https://img.shields.io/github/release/mojaloop/forensic-logging-sidecar.svg?style=flat)](https://github.com/mojaloop/forensic-logging-sidecar/releases)
+[![Docker pulls](https://img.shields.io/docker/pulls/mojaloop/forensic-logging-sidecar.svg?style=flat)](https://hub.docker.com/r/mojaloop/forensic-logging-sidecar)
+[![CircleCI](https://circleci.com/gh/mojaloop/forensic-logging-sidecar.svg?style=svg)](https://circleci.com/gh/mojaloop/forensic-logging-sidecar)
+
+
 The sidecar is a service that acts as an intermediary to facilitate messaging between the services and central kms, including the following functions:
 
 - Relaying a batch of events/messages from the connected services to the central kms
