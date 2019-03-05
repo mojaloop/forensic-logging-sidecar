@@ -3,6 +3,9 @@
   "version": "5.3.0",
   "description": "Sidecar service to save forensic logs",
   "license": "Apache-2.0",
+  "contributors": [
+    "Henk Kodde <henk.kodde@modusbox.com>"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mojaloop/forensic-logging-sidecar.git"
@@ -52,7 +55,7 @@
     "docker:publish:latest": "run-s docker:build:latest docker:push:latest"
   },
   "dependencies": {
-    "@mojaloop/central-services-database": "^5.2.1",
+    "@mojaloop/central-services-database": "0.4.0",
     "@mojaloop/central-services-error-handling": "5.2.0",
     "@mojaloop/central-services-shared": "0.4.0",
     "bitsyntax": "0.1.0",
@@ -72,7 +75,7 @@
   "devDependencies": {
     "aws-sdk": "2.401.0",
     "faucet": "0.0.1",
-    "istanbul": "1.1.0-alpha.1",
+    "istanbul": "2.1.1",
     "pre-commit": "1.2.2",
     "npm-run-all": "4.1.5",
     "proxyquire": "2.1.0",
