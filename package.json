@@ -52,7 +52,7 @@
     "docker:publish:latest": "run-s docker:build:latest docker:push:latest"
   },
   "dependencies": {
-    "@mojaloop/central-services-database": "0.4.0",
+    "@mojaloop/central-services-database": "^5.2.1",
     "@mojaloop/central-services-error-handling": "5.2.0",
     "@mojaloop/central-services-shared": "0.4.0",
     "bitsyntax": "0.1.0",
