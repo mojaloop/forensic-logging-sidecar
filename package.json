@@ -57,7 +57,7 @@
     "audit:check": "SHELL=sh check-audit"
   },
   "dependencies": {
-    "@mojaloop/central-services-database": "5.2.1",
+    "@mojaloop/central-services-database": "0.4.0",
     "@mojaloop/central-services-error-handling": "7.1.2",
     "@mojaloop/central-services-shared": "6.4.1",
     "bitsyntax": "0.1.0",
