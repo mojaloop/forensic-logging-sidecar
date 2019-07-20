@@ -31,21 +31,21 @@ Test('Events service', serviceTest => {
 
   serviceTest.test('create should', createTest => {
     createTest.test('create signature and persist to model', test => {
-      let sidecarId = Uuid()
-      let sequence = 1
-      let message = 'test message'
-      let signingKey = 'DFDE22A3276FC520A24FBE5534EDADFE080D78375C4530E038EFCF6CA699228A'
-      let now = Moment()
+      const sidecarId = Uuid()
+      const sequence = 1
+      const message = 'test message'
+      const signingKey = 'DFDE22A3276FC520A24FBE5534EDADFE080D78375C4530E038EFCF6CA699228A'
+      const now = Moment()
 
-      let savedEvent = {}
+      const savedEvent = {}
       Model.create.returns(P.resolve(savedEvent))
 
-      let signature = 'signature'
+      const signature = 'signature'
       SymmetricCrypto.sign.returns(signature)
 
       Moment.utc.returns(now)
 
-      let compactJSON = `{"keyId":"${sidecarId}","sequence":${sequence},"message":"${message}","timestamp":"${now.toISOString()}"}`
+      const compactJSON = `{"keyId":"${sidecarId}","sequence":${sequence},"message":"${message}","timestamp":"${now.toISOString()}"}`
 
       Service.create(sidecarId, sequence, message, signingKey)
         .then(s => {
@@ -67,8 +67,8 @@ Test('Events service', serviceTest => {
 
   serviceTest.test('getUnbatchedEventsByIds should', getUnbatchedEventsByIdsTest => {
     getUnbatchedEventsByIdsTest.test('get unbatched events from model', test => {
-      let eventIds = [1, 2]
-      let events = [{ eventId: eventIds[0] }, { eventId: eventIds[1] }]
+      const eventIds = [1, 2]
+      const events = [{ eventId: eventIds[0] }, { eventId: eventIds[1] }]
 
       Model.getUnbatchedEvents.returns(P.resolve(events))
 
@@ -85,10 +85,10 @@ Test('Events service', serviceTest => {
 
   serviceTest.test('getEventCountInTimespan should', getEventCountTest => {
     getEventCountTest.test('get event count from model', test => {
-      let now = Moment()
-      let start = Moment(now).subtract(5, 'minutes')
-      let sidecarId = 'sidecar-id'
-      let count = 6
+      const now = Moment()
+      const start = Moment(now).subtract(5, 'minutes')
+      const sidecarId = 'sidecar-id'
+      const count = 6
 
       Model.getEventCount.returns(P.resolve(count))
 
@@ -104,10 +104,10 @@ Test('Events service', serviceTest => {
     })
 
     getEventCountTest.test('convert dates to strings before calling model', test => {
-      let now = Moment()
-      let start = Moment(now).subtract(5, 'minutes')
-      let sidecarId = 'sidecar-id'
-      let count = 6
+      const now = Moment()
+      const start = Moment(now).subtract(5, 'minutes')
+      const sidecarId = 'sidecar-id'
+      const count = 6
 
       Model.getEventCount.returns(P.resolve(count))
 
@@ -127,10 +127,10 @@ Test('Events service', serviceTest => {
 
   serviceTest.test('assignEventsToBatch should', assignEventsTest => {
     assignEventsTest.test('update events with batch id', test => {
-      let batchId = 1
-      let batch = { batchId }
-      let events = [{ eventId: 1 }, { eventId: 2 }]
-      let updatedEvents = [{ eventId: 1, batchId }, { eventId: 2, batchId }]
+      const batchId = 1
+      const batch = { batchId }
+      const events = [{ eventId: 1 }, { eventId: 2 }]
+      const updatedEvents = [{ eventId: 1, batchId }, { eventId: 2, batchId }]
 
       Model.updateEvents.returns(P.resolve(updatedEvents))
 

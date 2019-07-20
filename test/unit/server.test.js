@@ -21,13 +21,13 @@ Test('Server', serverTest => {
   let oldKmsConfig
   let oldDatabaseUri
   let oldBatchTimeInterval
-  let port = 1234
-  let batchSize = 5
-  let batchTimeInterval = 30000
-  let healthPort = 2345
-  let service = 'MyService'
-  let kmsConfig = { 'URL': 'ws://test.com', 'PING_INTERVAL': 10000, 'REQUEST_TIMEOUT': 15000, 'CONNECT_TIMEOUT': 8000, 'RECONNECT_INTERVAL': 2000 }
-  let databaseUri = 'some-database-uri'
+  const port = 1234
+  const batchSize = 5
+  const batchTimeInterval = 30000
+  const healthPort = 2345
+  const service = 'MyService'
+  const kmsConfig = { URL: 'ws://test.com', PING_INTERVAL: 10000, REQUEST_TIMEOUT: 15000, CONNECT_TIMEOUT: 8000, RECONNECT_INTERVAL: 2000 }
+  const databaseUri = 'some-database-uri'
 
   serverTest.beforeEach(t => {
     sandbox = Sinon.sandbox.create()
@@ -74,10 +74,10 @@ Test('Server', serverTest => {
       Db.connect.returns(P.resolve({}))
       Migrator.migrate.returns(P.resolve({}))
 
-      let startStub = sandbox.stub()
+      const startStub = sandbox.stub()
       startStub.returns(P.resolve())
 
-      let sidecar = new EventEmitter()
+      const sidecar = new EventEmitter()
       sidecar.id = 'id'
       sidecar.service = 'test-service'
       sidecar.port = 1234
@@ -114,15 +114,15 @@ Test('Server', serverTest => {
     })
 
     setupTest.test('cleanup and rethrow on error', test => {
-      let error = new Error()
+      const error = new Error()
 
       Db.connect.returns(P.resolve({}))
       Migrator.migrate.returns(P.resolve({}))
 
-      let startStub = sandbox.stub()
+      const startStub = sandbox.stub()
       startStub.returns(P.reject(error))
 
-      let sidecar = new EventEmitter()
+      const sidecar = new EventEmitter()
       sidecar.start = startStub
       Sidecar.create.returns(sidecar)
 
@@ -143,14 +143,14 @@ Test('Server', serverTest => {
       Db.connect.returns(P.resolve({}))
       Migrator.migrate.returns(P.resolve({}))
 
-      let startStub = sandbox.stub()
+      const startStub = sandbox.stub()
       startStub.returns(P.resolve())
 
-      let sidecar = new EventEmitter()
+      const sidecar = new EventEmitter()
       sidecar.start = startStub
       Sidecar.create.returns(sidecar)
 
-      let p = require('../../src/server')
+      const p = require('../../src/server')
 
       p.then(() => {
         try {

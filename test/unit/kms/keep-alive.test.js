@@ -24,8 +24,8 @@ Test('KeepAlive', keepAliveTest => {
 
   keepAliveTest.test('create should', createTest => {
     createTest.test('create new pinger and set properties', test => {
-      let pingInterval = 1000
-      let keepAlive = KeepAlive.create(pingInterval)
+      const pingInterval = 1000
+      const keepAlive = KeepAlive.create(pingInterval)
 
       test.equal(keepAlive._pingInterval, pingInterval)
       test.notOk(keepAlive._pingTimer)
@@ -37,13 +37,13 @@ Test('KeepAlive', keepAliveTest => {
 
   keepAliveTest.test('start should', startTest => {
     startTest.test('create timer to send ping on interval', test => {
-      let pingInterval = 5000
-      let ws = { ping: sandbox.stub() }
+      const pingInterval = 5000
+      const ws = { ping: sandbox.stub() }
 
-      let now = Moment()
+      const now = Moment()
       Moment.utc.returns(now)
 
-      let keepAlive = KeepAlive.create(pingInterval)
+      const keepAlive = KeepAlive.create(pingInterval)
 
       keepAlive.start(ws)
       test.ok(keepAlive._pingTimer)
@@ -56,9 +56,9 @@ Test('KeepAlive', keepAliveTest => {
     })
 
     startTest.test('do nothing if timer already started', test => {
-      let timer = {}
+      const timer = {}
 
-      let keepAlive = KeepAlive.create(1000)
+      const keepAlive = KeepAlive.create(1000)
       keepAlive._pingTimer = timer
 
       keepAlive.start({})
@@ -72,12 +72,12 @@ Test('KeepAlive', keepAliveTest => {
 
   keepAliveTest.test('stop should', stopTest => {
     stopTest.test('destroy ping timer', test => {
-      let pingInterval = 5000
-      let ws = { ping: sandbox.stub() }
+      const pingInterval = 5000
+      const ws = { ping: sandbox.stub() }
 
       sandbox.stub(global, 'clearInterval')
 
-      let keepAlive = KeepAlive.create(pingInterval)
+      const keepAlive = KeepAlive.create(pingInterval)
 
       keepAlive.start(ws)
       test.ok(keepAlive._pingTimer)
@@ -90,11 +90,11 @@ Test('KeepAlive', keepAliveTest => {
     })
 
     stopTest.test('do nothing if timer already stopped', test => {
-      let pingInterval = 5000
+      const pingInterval = 5000
 
       sandbox.stub(global, 'clearInterval')
 
-      let keepAlive = KeepAlive.create(pingInterval)
+      const keepAlive = KeepAlive.create(pingInterval)
 
       keepAlive.stop()
       test.notOk(global.clearInterval.calledOnce)

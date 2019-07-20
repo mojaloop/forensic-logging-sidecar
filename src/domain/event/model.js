@@ -7,11 +7,11 @@ exports.create = (event) => {
 }
 
 exports.getUnbatchedEvents = (eventIds) => {
-  return Db.events.find({ 'eventId': eventIds, 'batchId': null }, { order: 'sequence asc' })
+  return Db.events.find({ eventId: eventIds, batchId: null }, { order: 'sequence asc' })
 }
 
 exports.getEventCount = (sidecarId, { startTime = null, endTime = null } = {}) => {
-  let criteria = { sidecarId }
+  const criteria = { sidecarId }
 
   if (startTime) {
     criteria['created >='] = startTime
@@ -24,5 +24,5 @@ exports.getEventCount = (sidecarId, { startTime = null, endTime = null } = {}) =
 }
 
 exports.updateEvents = (eventIds, fields) => {
-  return Db.events.update({ 'eventId': eventIds }, fields)
+  return Db.events.update({ eventId: eventIds }, fields)
 }

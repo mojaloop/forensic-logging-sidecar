@@ -26,7 +26,7 @@ Test('WebSocket', webSocketTest => {
     KeepAlive.create.returns(keepAliveStub)
 
     wsStub = sandbox.stub()
-    WebSocket = Proxyquire(`${src}/kms/websocket`, { 'ws': wsStub })
+    WebSocket = Proxyquire(`${src}/kms/websocket`, { ws: wsStub })
 
     clock = sandbox.useFakeTimers()
 
@@ -41,8 +41,8 @@ Test('WebSocket', webSocketTest => {
 
   webSocketTest.test('create should', createTest => {
     createTest.test('create new websocket and set properties', test => {
-      let settings = { url: 'ws://test.com', pingInterval: 5000, connectTimeout: 9000, reconnectInterval: 2000 }
-      let webSocket = WebSocket.create(settings)
+      const settings = { url: 'ws://test.com', pingInterval: 5000, connectTimeout: 9000, reconnectInterval: 2000 }
+      const webSocket = WebSocket.create(settings)
 
       test.equal(webSocket._url, settings.url)
       test.equal(webSocket._pingInterval, settings.pingInterval)
@@ -57,13 +57,13 @@ Test('WebSocket', webSocketTest => {
 
   webSocketTest.test('connect should', connectTest => {
     connectTest.test('create websocket connection and emit open event', test => {
-      let openSpy = sandbox.spy()
+      const openSpy = sandbox.spy()
 
-      let settings = { url: 'ws://test.com', pingInterval: 5000 }
-      let webSocket = WebSocket.create(settings)
+      const settings = { url: 'ws://test.com', pingInterval: 5000 }
+      const webSocket = WebSocket.create(settings)
       webSocket.on('open', openSpy)
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsStub.returns(wsEmitter)
 
       webSocket.connect()
@@ -96,15 +96,15 @@ Test('WebSocket', webSocketTest => {
     })
 
     connectTest.test('reject if connect timeout reached', test => {
-      let openSpy = sandbox.spy()
-      let errorSpy = sandbox.spy()
+      const openSpy = sandbox.spy()
+      const errorSpy = sandbox.spy()
 
-      let settings = { url: 'ws://test.com', connectTimeout: 5000 }
-      let webSocket = WebSocket.create(settings)
+      const settings = { url: 'ws://test.com', connectTimeout: 5000 }
+      const webSocket = WebSocket.create(settings)
       webSocket.on('open', openSpy)
       webSocket.on('error', errorSpy)
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.close = sandbox.stub()
       wsStub.returns(wsEmitter)
 
@@ -139,15 +139,15 @@ Test('WebSocket', webSocketTest => {
     })
 
     connectTest.test('reconnect if ECONNREFUSED error', test => {
-      let openSpy = sandbox.spy()
-      let errorSpy = sandbox.spy()
+      const openSpy = sandbox.spy()
+      const errorSpy = sandbox.spy()
 
-      let settings = { url: 'ws://test.com', connectTimeout: 5000, reconnectInterval: 1000, pingInterval: 5000 }
-      let webSocket = WebSocket.create(settings)
+      const settings = { url: 'ws://test.com', connectTimeout: 5000, reconnectInterval: 1000, pingInterval: 5000 }
+      const webSocket = WebSocket.create(settings)
       webSocket.on('open', openSpy)
       webSocket.on('error', errorSpy)
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsStub.returns(wsEmitter)
 
       webSocket.connect()
@@ -162,7 +162,7 @@ Test('WebSocket', webSocketTest => {
       test.ok(wsEmitter.listenerCount('error'), 1)
       test.equal(wsEmitter.listeners('error')[0].name.indexOf('_onError'), -1)
 
-      let error = new Error('Error connecting to websocket')
+      const error = new Error('Error connecting to websocket')
       error.code = 'ECONNREFUSED'
       wsEmitter.emit('error', error)
 
@@ -187,15 +187,15 @@ Test('WebSocket', webSocketTest => {
     })
 
     connectTest.test('reject if error event emitted', test => {
-      let openSpy = sandbox.spy()
-      let errorSpy = sandbox.spy()
+      const openSpy = sandbox.spy()
+      const errorSpy = sandbox.spy()
 
-      let settings = { url: 'ws://test.com' }
-      let webSocket = WebSocket.create(settings)
+      const settings = { url: 'ws://test.com' }
+      const webSocket = WebSocket.create(settings)
       webSocket.on('open', openSpy)
       webSocket.on('error', errorSpy)
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.close = sandbox.stub()
       wsStub.returns(wsEmitter)
 
@@ -211,7 +211,7 @@ Test('WebSocket', webSocketTest => {
       test.ok(wsEmitter.listenerCount('error'), 1)
       test.equal(wsEmitter.listeners('error')[0].name.indexOf('_onError'), -1)
 
-      let error = new Error('Error connecting to websocket')
+      const error = new Error('Error connecting to websocket')
       wsEmitter.emit('error', error)
 
       test.notOk(openSpy.calledOnce)
@@ -229,9 +229,9 @@ Test('WebSocket', webSocketTest => {
     })
 
     connectTest.test('emit open event if already connected', test => {
-      let openSpy = sandbox.spy()
+      const openSpy = sandbox.spy()
 
-      let ws = WebSocket.create({})
+      const ws = WebSocket.create({})
       ws._connected = true
       ws.on('open', openSpy)
 
@@ -247,16 +247,16 @@ Test('WebSocket', webSocketTest => {
 
   webSocketTest.test('send should', sendTest => {
     sendTest.test('call send method on internal ws if connected', test => {
-      let webSocket = WebSocket.create({})
+      const webSocket = WebSocket.create({})
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.send = sandbox.stub()
       wsStub.returns(wsEmitter)
 
       webSocket.connect()
       wsEmitter.emit('open')
 
-      let msg = 'This is a test'
+      const msg = 'This is a test'
       webSocket.send(msg)
 
       test.ok(wsEmitter.send.calledWith(msg))
@@ -265,9 +265,9 @@ Test('WebSocket', webSocketTest => {
     })
 
     sendTest.test('do nothing if internal ws not connected', test => {
-      let webSocket = WebSocket.create({})
+      const webSocket = WebSocket.create({})
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.send = sandbox.stub()
       wsStub.returns(wsEmitter)
 
@@ -283,9 +283,9 @@ Test('WebSocket', webSocketTest => {
 
   webSocketTest.test('close should', closeTest => {
     closeTest.test('call close method on internal ws if connected', test => {
-      let webSocket = WebSocket.create({})
+      const webSocket = WebSocket.create({})
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.close = sandbox.stub()
       wsStub.returns(wsEmitter)
 
@@ -300,9 +300,9 @@ Test('WebSocket', webSocketTest => {
     })
 
     closeTest.test('do nothing if internal websocket not connected', test => {
-      let webSocket = WebSocket.create({})
+      const webSocket = WebSocket.create({})
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.close = sandbox.stub()
       wsStub.returns(wsEmitter)
 
@@ -318,20 +318,20 @@ Test('WebSocket', webSocketTest => {
 
   webSocketTest.test('receiving ws close event should', closeEventTest => {
     closeEventTest.test('cleanup and emit close event', test => {
-      let closeSpy = sandbox.spy()
+      const closeSpy = sandbox.spy()
 
-      let webSocket = WebSocket.create({})
+      const webSocket = WebSocket.create({})
       webSocket.on('close', closeSpy)
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.close = sandbox.stub()
       wsStub.returns(wsEmitter)
 
       webSocket.connect()
       wsEmitter.emit('open')
 
-      let code = 100
-      let reason = 'reason'
+      const code = 100
+      const reason = 'reason'
       wsEmitter.emit('close', code, reason)
 
       test.ok(keepAliveStub.stop.calledOnce)
@@ -350,19 +350,19 @@ Test('WebSocket', webSocketTest => {
 
   webSocketTest.test('receiving ws error event should', errorEventTest => {
     errorEventTest.test('cleanup and emit error event', test => {
-      let errorSpy = sandbox.spy()
+      const errorSpy = sandbox.spy()
 
-      let webSocket = WebSocket.create({})
+      const webSocket = WebSocket.create({})
       webSocket.on('error', errorSpy)
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.close = sandbox.stub()
       wsStub.returns(wsEmitter)
 
       webSocket.connect()
       wsEmitter.emit('open')
 
-      let err = new Error()
+      const err = new Error()
       wsEmitter.emit('error', err)
 
       test.ok(keepAliveStub.stop.calledOnce)
@@ -381,16 +381,16 @@ Test('WebSocket', webSocketTest => {
 
   webSocketTest.test('receiving ws ping event should', pingEventTest => {
     pingEventTest.test('send pong', test => {
-      let webSocket = WebSocket.create({})
+      const webSocket = WebSocket.create({})
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.pong = sandbox.stub()
       wsStub.returns(wsEmitter)
 
       webSocket.connect()
       wsEmitter.emit('open')
 
-      let data = JSON.stringify({ test: 'test' })
+      const data = JSON.stringify({ test: 'test' })
       wsEmitter.emit('ping', data)
       test.ok(wsEmitter.pong.calledWith(data))
       test.end()
@@ -401,19 +401,19 @@ Test('WebSocket', webSocketTest => {
 
   webSocketTest.test('receiving ws pong event', pongEventTest => {
     pongEventTest.test('log elapsed time since ping', test => {
-      let webSocket = WebSocket.create({})
+      const webSocket = WebSocket.create({})
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsStub.returns(wsEmitter)
 
       webSocket.connect()
       wsEmitter.emit('open')
 
-      let now = Moment()
+      const now = Moment()
       Moment.utc.returns(now)
 
-      let timestamp = Moment(now).subtract(5, 'seconds')
-      let data = JSON.stringify({ timestamp: timestamp.toISOString() })
+      const timestamp = Moment(now).subtract(5, 'seconds')
+      const data = JSON.stringify({ timestamp: timestamp.toISOString() })
 
       wsEmitter.emit('pong', data)
       test.ok(Logger.info.calledWith('Received pong, elapsed 5000ms'))
@@ -425,18 +425,18 @@ Test('WebSocket', webSocketTest => {
 
   webSocketTest.test('receiving ws message event should', messageEventTest => {
     messageEventTest.test('emit message event', test => {
-      let messageSpy = sandbox.spy()
+      const messageSpy = sandbox.spy()
 
-      let webSocket = WebSocket.create({})
+      const webSocket = WebSocket.create({})
       webSocket.on('message', messageSpy)
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsStub.returns(wsEmitter)
 
       webSocket.connect()
       wsEmitter.emit('open')
 
-      let msg = 'This is a test'
+      const msg = 'This is a test'
       wsEmitter.emit('message', msg)
 
       test.ok(messageSpy.calledWith(msg))

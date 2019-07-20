@@ -29,16 +29,16 @@ Test('Symmetric crypto', symmetricTest => {
 
   symmetricTest.test('sign should', createTest => {
     createTest.test('create AES CMAC signature', test => {
-      let message = 'test message'
-      let signingKey = 'DFDE22A3276FC520A24FBE5534EDADFE080D78375C4530E038EFCF6CA699228A'
-      let signingKeyBuffer = Buffer.from(signingKey, 'hex')
+      const message = 'test message'
+      const signingKey = 'DFDE22A3276FC520A24FBE5534EDADFE080D78375C4530E038EFCF6CA699228A'
+      const signingKeyBuffer = Buffer.from(signingKey, 'hex')
 
       CryptoUtil.hexToBuffer.returns(signingKeyBuffer)
 
-      let signature = 'signature'
+      const signature = 'signature'
       aesCmacStub.returns(signature)
 
-      let s = Symmetric.sign(message, signingKey)
+      const s = Symmetric.sign(message, signingKey)
       test.ok(CryptoUtil.hexToBuffer.calledWith(signingKey))
       test.ok(aesCmacStub.calledWith(signingKeyBuffer, message))
       test.equal(s, signature)

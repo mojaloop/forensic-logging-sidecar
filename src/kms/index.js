@@ -109,7 +109,7 @@ class KmsConnection extends EventEmitter {
   }
 
   sendBatch (batch) {
-    return this.request('batch', { 'id': batch.batchId, 'signature': batch.signature })
+    return this.request('batch', { id: batch.batchId, signature: batch.signature })
   }
 
   request (method, params) {
@@ -155,10 +155,10 @@ class KmsConnection extends EventEmitter {
 
   // Websocket event handlers
   _onWebSocketMessage (data) {
-    let parsed = JSON.parse(data)
+    const parsed = JSON.parse(data)
 
     if (this._isJsonRpc(parsed)) {
-      let id = parsed.id
+      const id = parsed.id
 
       if (this._isJsonRpcRequest(parsed)) {
         // This is a request from the KMS, emit the appropriate event.

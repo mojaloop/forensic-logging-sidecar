@@ -1,21 +1,21 @@
 'use strict'
 
 function writeMessageToBuffer (msg) {
-  let message = Buffer.isBuffer(msg) ? msg : Buffer.from(msg)
-  let length = message.length
+  const message = Buffer.isBuffer(msg) ? msg : Buffer.from(msg)
+  const length = message.length
 
-  let buffer = Buffer.alloc(length)
+  const buffer = Buffer.alloc(length)
   message.copy(buffer, 0, 0, length)
   return buffer
 }
 
 function writeMessageToBufferWithLength (msg) {
-  let prefixSize = 4
+  const prefixSize = 4
 
-  let message = Buffer.isBuffer(msg) ? msg : Buffer.from(msg)
-  let length = message.length
+  const message = Buffer.isBuffer(msg) ? msg : Buffer.from(msg)
+  const length = message.length
 
-  let buffer = Buffer.alloc(prefixSize + length)
+  const buffer = Buffer.alloc(prefixSize + length)
   buffer.writeUInt32BE(length, 0)
   message.copy(buffer, prefixSize, 0, length)
   return buffer

@@ -26,18 +26,18 @@ Test('SocketListener', socketListenerTest => {
 
   socketListenerTest.test('listen should', listenTest => {
     listenTest.test('call listen method on internal server and wait for listening event to resolve', test => {
-      let port = 1111
-      let hostname = 'localhost'
+      const port = 1111
+      const hostname = 'localhost'
 
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
       socket.listen = sandbox.stub()
 
       Net.createServer.returns(socket)
 
-      let socketListener = SocketListener.create()
+      const socketListener = SocketListener.create()
       test.notOk(socketListener._bound)
 
-      let listenPromise = socketListener.listen(port, hostname)
+      const listenPromise = socketListener.listen(port, hostname)
 
       socket.emit('listening')
 
@@ -55,23 +55,23 @@ Test('SocketListener', socketListenerTest => {
 
   socketListenerTest.test('close should', closeTest => {
     closeTest.test('call close method on internal socket, close open connections and emit close event', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
       socket.close = sandbox.stub()
       socket.close.callsArg(0)
 
       Net.createServer.returns(socket)
 
-      let conn = sandbox.stub()
+      const conn = sandbox.stub()
       conn.remoteAddress = 'localhost'
       conn.remotePort = 1111
 
-      let tcpConnection = new EventEmitter()
+      const tcpConnection = new EventEmitter()
       tcpConnection.close = sandbox.stub()
       TcpConnection.create.returns(tcpConnection)
 
-      let closeSpy = sandbox.spy()
+      const closeSpy = sandbox.spy()
 
-      let socketListener = SocketListener.create()
+      const socketListener = SocketListener.create()
       socketListener._bound = true
 
       socket.emit('connection', conn)
@@ -89,12 +89,12 @@ Test('SocketListener', socketListenerTest => {
     })
 
     closeTest.test('do nothing if internal server not bound', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
       socket.close = sandbox.stub()
 
       Net.createServer.returns(socket)
 
-      let socketListener = SocketListener.create()
+      const socketListener = SocketListener.create()
       socketListener._bound = false
 
       socketListener.close()
@@ -109,19 +109,19 @@ Test('SocketListener', socketListenerTest => {
 
   socketListenerTest.test('pause should', pauseTest => {
     pauseTest.test('set paused flag to true and pause any connections', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
 
       Net.createServer.returns(socket)
 
-      let conn = sandbox.stub()
+      const conn = sandbox.stub()
       conn.remoteAddress = 'localhost'
       conn.remotePort = 1111
 
-      let tcpConnection = new EventEmitter()
+      const tcpConnection = new EventEmitter()
       tcpConnection.pause = sandbox.stub()
       TcpConnection.create.returns(tcpConnection)
 
-      let socketListener = SocketListener.create()
+      const socketListener = SocketListener.create()
       test.notOk(socketListener._paused)
 
       socket.emit('connection', conn)
@@ -137,20 +137,20 @@ Test('SocketListener', socketListenerTest => {
 
   socketListenerTest.test('resume should', resumeTest => {
     resumeTest.test('set paused flag to false and resume any connections', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
 
       Net.createServer.returns(socket)
 
-      let conn = sandbox.stub()
+      const conn = sandbox.stub()
       conn.remoteAddress = 'localhost'
       conn.remotePort = 1111
 
-      let tcpConnection = new EventEmitter()
+      const tcpConnection = new EventEmitter()
       tcpConnection.pause = sandbox.stub()
       tcpConnection.resume = sandbox.stub()
       TcpConnection.create.returns(tcpConnection)
 
-      let socketListener = SocketListener.create()
+      const socketListener = SocketListener.create()
 
       socket.emit('connection', conn)
 
@@ -166,19 +166,19 @@ Test('SocketListener', socketListenerTest => {
     })
 
     resumeTest.test('do nothing if not paused', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
 
       Net.createServer.returns(socket)
 
-      let conn = sandbox.stub()
+      const conn = sandbox.stub()
       conn.remoteAddress = 'localhost'
       conn.remotePort = 1111
 
-      let tcpConnection = new EventEmitter()
+      const tcpConnection = new EventEmitter()
       tcpConnection.resume = sandbox.stub()
       TcpConnection.create.returns(tcpConnection)
 
-      let socketListener = SocketListener.create()
+      const socketListener = SocketListener.create()
 
       socket.emit('connection', conn)
 
@@ -196,15 +196,15 @@ Test('SocketListener', socketListenerTest => {
 
   socketListenerTest.test('receiving server close should', serverCloseTest => {
     serverCloseTest.test('call close method on internal server and emit close event', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
       socket.close = sandbox.stub()
       socket.close.callsArg(0)
 
       Net.createServer.returns(socket)
 
-      let closeSpy = sandbox.spy()
+      const closeSpy = sandbox.spy()
 
-      let socketListener = SocketListener.create()
+      const socketListener = SocketListener.create()
       socketListener._bound = true
       socketListener.on('close', closeSpy)
 
@@ -221,14 +221,14 @@ Test('SocketListener', socketListenerTest => {
 
   socketListenerTest.test('receiving server error should', serverErrorTest => {
     serverErrorTest.test('emit error event with existing error object', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
       Net.createServer.returns(socket)
 
-      let errorSpy = sandbox.spy()
+      const errorSpy = sandbox.spy()
 
-      let error = new Error('bad stuff in server')
+      const error = new Error('bad stuff in server')
 
-      let socketListener = SocketListener.create()
+      const socketListener = SocketListener.create()
       socketListener.on('error', errorSpy)
 
       socket.emit('error', error)
@@ -243,17 +243,17 @@ Test('SocketListener', socketListenerTest => {
 
   socketListenerTest.test('receiving server connection should', serverConnectionTest => {
     serverConnectionTest.test('create TcpConnection and add to list', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
       Net.createServer.returns(socket)
 
-      let conn = sandbox.stub()
+      const conn = sandbox.stub()
       conn.remoteAddress = 'localhost'
       conn.remotePort = 1111
 
-      let tcpConnection = new EventEmitter()
+      const tcpConnection = new EventEmitter()
       TcpConnection.create.returns(tcpConnection)
 
-      let socketListener = SocketListener.create()
+      const socketListener = SocketListener.create()
       test.equal(socketListener._connections.length, 0)
 
       socket.emit('connection', conn)
@@ -269,25 +269,25 @@ Test('SocketListener', socketListenerTest => {
 
   socketListenerTest.test('receiving TcpConnection message should', connMessageTest => {
     connMessageTest.test('convert message to utf8 string and emit message event', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
       Net.createServer.returns(socket)
 
-      let conn = sandbox.stub()
+      const conn = sandbox.stub()
       conn.remoteAddress = 'localhost'
       conn.remotePort = 1111
 
-      let tcpConnection = new EventEmitter()
+      const tcpConnection = new EventEmitter()
       TcpConnection.create.returns(tcpConnection)
 
-      let messageSpy = sandbox.spy()
+      const messageSpy = sandbox.spy()
 
-      let socketListener = SocketListener.create()
+      const socketListener = SocketListener.create()
       socketListener.on('message', messageSpy)
 
       socket.emit('connection', conn)
 
-      let message = JSON.stringify({ id: '1ab042bd-e098-4d96-ae8b-e07aefd04ca4', serviceName: 'service' })
-      let receiveBuffer = Fixtures.writeMessageToBuffer(message)
+      const message = JSON.stringify({ id: '1ab042bd-e098-4d96-ae8b-e07aefd04ca4', serviceName: 'service' })
+      const receiveBuffer = Fixtures.writeMessageToBuffer(message)
 
       tcpConnection.emit('message', receiveBuffer)
 
@@ -301,19 +301,19 @@ Test('SocketListener', socketListenerTest => {
 
   socketListenerTest.test('receiving TcpConnection end should', connCloseTest => {
     connCloseTest.test('remove connection from list and emit disconnect event', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
       Net.createServer.returns(socket)
 
-      let conn = sandbox.stub()
+      const conn = sandbox.stub()
       conn.remoteAddress = 'localhost'
       conn.remotePort = 1111
 
-      let tcpConnection = new EventEmitter()
+      const tcpConnection = new EventEmitter()
       TcpConnection.create.returns(tcpConnection)
 
-      let disconnectSpy = sandbox.spy()
+      const disconnectSpy = sandbox.spy()
 
-      let socketListener = SocketListener.create()
+      const socketListener = SocketListener.create()
       socketListener.on('disconnect', disconnectSpy)
 
       socket.emit('connection', conn)
@@ -332,19 +332,19 @@ Test('SocketListener', socketListenerTest => {
 
   socketListenerTest.test('receiving TcpConnection error should', connErrorTest => {
     connErrorTest.test('remove connection from list and emit disconnect event', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
       Net.createServer.returns(socket)
 
-      let conn = sandbox.stub()
+      const conn = sandbox.stub()
       conn.remoteAddress = 'localhost'
       conn.remotePort = 1111
 
-      let tcpConnection = new EventEmitter()
+      const tcpConnection = new EventEmitter()
       TcpConnection.create.returns(tcpConnection)
 
-      let disconnectSpy = sandbox.spy()
+      const disconnectSpy = sandbox.spy()
 
-      let socketListener = SocketListener.create()
+      const socketListener = SocketListener.create()
       socketListener.on('disconnect', disconnectSpy)
 
       socket.emit('connection', conn)

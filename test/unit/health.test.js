@@ -31,7 +31,7 @@ Test('Health', serverTest => {
       Server: sandbox.stub().returns(serverStub)
     }
     Setup = Proxyquire('../../src/health', {
-      'hapi': HapiStub
+      hapi: HapiStub
     })
     test.end()
   })

@@ -9,14 +9,14 @@ class SocketListener extends EventEmitter {
   constructor () {
     super()
 
-    let self = this
+    const self = this
     self._bound = false
     self._paused = false
     self._connections = []
 
     self._server = Net.createServer()
     self._server.on('connection', socket => {
-      let tcpConnection = TcpConnection.create(socket)
+      const tcpConnection = TcpConnection.create(socket)
       self._connections.push(tcpConnection)
 
       tcpConnection.on('message', self._onConnectionMessage.bind(self))

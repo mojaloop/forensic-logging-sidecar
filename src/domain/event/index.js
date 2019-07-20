@@ -10,7 +10,7 @@ exports.create = (sidecarId, sequence, message, signingKey) => {
   const created = Moment.utc()
   const eventId = Uuid()
 
-  let event = { eventId, sidecarId, sequence, message, created }
+  const event = { eventId, sidecarId, sequence, message, created }
   event.signature = createEventSignature(event, signingKey)
 
   return Model.create(event)

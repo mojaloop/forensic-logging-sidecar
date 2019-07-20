@@ -24,7 +24,7 @@ Test('KMS Request', kmsReqTest => {
 
   kmsReqTest.test('create should', createTest => {
     createTest.test('set default properties', test => {
-      let req = KmsRequest.create()
+      const req = KmsRequest.create()
 
       test.equal(req.promise, undefined)
       test.equal(req._resolve, undefined)
@@ -37,9 +37,9 @@ Test('KMS Request', kmsReqTest => {
 
   kmsReqTest.test('build should', buildTest => {
     buildTest.test('create pending promise', test => {
-      let funcSpy = sandbox.spy()
+      const funcSpy = sandbox.spy()
 
-      let req = KmsRequest.create()
+      const req = KmsRequest.create()
       req.build(funcSpy)
 
       test.ok(req.promise)
@@ -49,7 +49,7 @@ Test('KMS Request', kmsReqTest => {
     })
 
     buildTest.test('should reject in case of error in function', test => {
-      let req = KmsRequest.create()
+      const req = KmsRequest.create()
       req.build(() => { throw new Error('err') })
 
       req.promise
@@ -64,9 +64,9 @@ Test('KMS Request', kmsReqTest => {
     })
 
     buildTest.test('reject after timeout', test => {
-      let timeout = 1000
+      const timeout = 1000
 
-      let req = KmsRequest.create()
+      const req = KmsRequest.create()
       req.build(() => {}, timeout)
 
       clock.tick(timeout + 1)
@@ -87,8 +87,8 @@ Test('KMS Request', kmsReqTest => {
 
   kmsReqTest.test('resolve should', resolveTest => {
     resolveTest.test('resolve pending promise', test => {
-      let value = 'yay'
-      let req = KmsRequest.create()
+      const value = 'yay'
+      const req = KmsRequest.create()
       req.build(() => {})
 
       req.resolve(value)
@@ -101,10 +101,10 @@ Test('KMS Request', kmsReqTest => {
     })
 
     resolveTest.test('handle no function passed in', test => {
-      let req = KmsRequest.create()
+      const req = KmsRequest.create()
       req.build()
 
-      let value = 'stuff'
+      const value = 'stuff'
       req.resolve(value)
 
       req.promise
@@ -115,10 +115,10 @@ Test('KMS Request', kmsReqTest => {
     })
 
     resolveTest.test('call finally function', test => {
-      let finallyStub = sandbox.stub().returns(P.resolve())
+      const finallyStub = sandbox.stub().returns(P.resolve())
 
-      let value = 'yay'
-      let req = KmsRequest.create()
+      const value = 'yay'
+      const req = KmsRequest.create()
       req.build(() => {}, 5000, finallyStub)
       test.notOk(finallyStub.called)
 
@@ -137,8 +137,8 @@ Test('KMS Request', kmsReqTest => {
 
   kmsReqTest.test('reject should', rejectTest => {
     rejectTest.test('reject pending promise', test => {
-      let error = new Error('bad stuff')
-      let req = KmsRequest.create()
+      const error = new Error('bad stuff')
+      const req = KmsRequest.create()
       req.build(() => {})
       req.reject(error)
 
@@ -154,10 +154,10 @@ Test('KMS Request', kmsReqTest => {
     })
 
     rejectTest.test('call finally function', test => {
-      let finallyStub = sandbox.stub().returns(P.resolve())
+      const finallyStub = sandbox.stub().returns(P.resolve())
 
-      let error = new Error('bad stuff')
-      let req = KmsRequest.create()
+      const error = new Error('bad stuff')
+      const req = KmsRequest.create()
       req.build(() => {}, 5000, finallyStub)
       test.notOk(finallyStub.called)
 

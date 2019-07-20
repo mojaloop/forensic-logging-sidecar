@@ -31,17 +31,17 @@ class ForensicLogger extends EventEmitter {
   }
 
   write (msg) {
-    let message = Buffer.isBuffer(msg) ? msg : Buffer.from(msg)
-    let length = message.length
+    const message = Buffer.isBuffer(msg) ? msg : Buffer.from(msg)
+    const length = message.length
 
-    let buffer = Buffer.alloc(this._prefixSize + length)
+    const buffer = Buffer.alloc(this._prefixSize + length)
     buffer.writeUInt32BE(length, 0)
     message.copy(buffer, this._prefixSize)
     this._client.write(buffer)
   }
 }
 
-let logger = new ForensicLogger()
+const logger = new ForensicLogger()
 
 logger.on('open', () => {
   logger.write(JSON.stringify(LargeData))

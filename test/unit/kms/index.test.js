@@ -28,7 +28,7 @@ Test('KmsConnection', kmsConnTest => {
     sandbox.stub(AsymmetricCrypto, 'sign')
 
     uuidStub = sandbox.stub()
-    KmsConnection = Proxyquire(`${src}/kms`, { 'uuid4': uuidStub })
+    KmsConnection = Proxyquire(`${src}/kms`, { uuid4: uuidStub })
 
     t.end()
   })
@@ -40,7 +40,7 @@ Test('KmsConnection', kmsConnTest => {
 
   kmsConnTest.test('create should', createTest => {
     createTest.test('create new connection and set properties', test => {
-      let settings = { url: 'ws://test.com', pingInterval: 5000, requestTimeout: 15000, connectTimeout: 9000, reconnectInterval: 2000 }
+      const settings = { url: 'ws://test.com', pingInterval: 5000, requestTimeout: 15000, connectTimeout: 9000, reconnectInterval: 2000 }
       KmsConnection.create(settings)
 
       test.ok(WebSocket.create.calledWith(sandbox.match({
@@ -76,15 +76,15 @@ Test('KmsConnection', kmsConnTest => {
 
   kmsConnTest.test('connect should', connectTest => {
     connectTest.test('connect to websocket and resolve when open', test => {
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(false)
       WebSocket.create.returns(wsEmitter)
 
-      let settings = { url: 'ws://test.com', pingInterval: 5000 }
-      let kmsConnection = KmsConnection.create(settings)
+      const settings = { url: 'ws://test.com', pingInterval: 5000 }
+      const kmsConnection = KmsConnection.create(settings)
 
-      let connectPromise = kmsConnection.connect()
+      const connectPromise = kmsConnection.connect()
       test.ok(wsEmitter.connect.calledOnce)
       test.ok(wsEmitter.listenerCount('open'), 1)
       test.ok(wsEmitter.listenerCount('error'), 1)
@@ -104,21 +104,21 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     connectTest.test('reject if error event emitted', test => {
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(false)
       WebSocket.create.returns(wsEmitter)
 
-      let settings = { url: 'ws://test.com' }
-      let kmsConnection = KmsConnection.create(settings)
+      const settings = { url: 'ws://test.com' }
+      const kmsConnection = KmsConnection.create(settings)
 
-      let connectPromise = kmsConnection.connect()
+      const connectPromise = kmsConnection.connect()
       test.ok(wsEmitter.connect.calledOnce)
       test.ok(wsEmitter.listenerCount('open'), 1)
       test.ok(wsEmitter.listenerCount('error'), 1)
       test.equal(wsEmitter.listeners('error')[0].name.indexOf('_onWebSocketError'), -1)
 
-      let error = new Error('Error connecting to websocket')
+      const error = new Error('Error connecting to websocket')
       wsEmitter.emit('error', error)
 
       connectPromise
@@ -137,12 +137,12 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     connectTest.test('return immediately if already connected', test => {
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(true)
       WebSocket.create.returns(wsEmitter)
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
 
       kmsConnection.connect()
         .then(() => {
@@ -156,13 +156,13 @@ Test('KmsConnection', kmsConnTest => {
 
   kmsConnTest.test('close should', closeTest => {
     closeTest.test('call close method on websocket connection', test => {
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(true)
       wsEmitter.close = sandbox.stub()
       WebSocket.create.returns(wsEmitter)
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
 
       kmsConnection.connect()
         .then(() => {
@@ -178,11 +178,11 @@ Test('KmsConnection', kmsConnTest => {
 
   kmsConnTest.test('register should', registerTest => {
     registerTest.test('reject if not connected', test => {
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.isConnected = sandbox.stub().returns(false)
       WebSocket.create.returns(wsEmitter)
 
-      let conn = KmsConnection.create()
+      const conn = KmsConnection.create()
 
       conn.register('id')
         .then(() => {
@@ -196,29 +196,29 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     registerTest.test('register with KMS and perform challenge', test => {
-      let requestStartStub = sandbox.stub()
+      const requestStartStub = sandbox.stub()
       Requests.create.returns({ start: requestStartStub })
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.send = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(true)
       WebSocket.create.returns(wsEmitter)
 
-      let sidecarId = 'sidecar1'
-      let serviceName = 'TestSidecar'
+      const sidecarId = 'sidecar1'
+      const serviceName = 'TestSidecar'
 
-      let registerMessageId = `register-${sidecarId}`
-      let registerRequest = { jsonrpc: '2.0', id: registerMessageId, method: 'register', params: { id: sidecarId, serviceName } }
-      let registerResponse = { jsonrpc: '2.0', id: registerMessageId, result: { id: sidecarId, batchKey: 'batch-key', rowKey: 'row-key', challenge: 'challenge' } }
+      const registerMessageId = `register-${sidecarId}`
+      const registerRequest = { jsonrpc: '2.0', id: registerMessageId, method: 'register', params: { id: sidecarId, serviceName } }
+      const registerResponse = { jsonrpc: '2.0', id: registerMessageId, result: { id: sidecarId, batchKey: 'batch-key', rowKey: 'row-key', challenge: 'challenge' } }
 
       const rowSignature = 'row-signature'
       const batchSignature = 'batch-signature'
       SymmetricCrypto.sign.returns(rowSignature)
       AsymmetricCrypto.sign.returns(batchSignature)
 
-      let challengeMessageId = `challenge-${sidecarId}`
-      let challengeRequest = { jsonrpc: '2.0', id: challengeMessageId, method: 'challenge', params: { rowSignature, batchSignature } }
-      let challengeResponse = { jsonrpc: '2.0', id: challengeMessageId, result: { status: 'ok' } }
+      const challengeMessageId = `challenge-${sidecarId}`
+      const challengeRequest = { jsonrpc: '2.0', id: challengeMessageId, method: 'challenge', params: { rowSignature, batchSignature } }
+      const challengeResponse = { jsonrpc: '2.0', id: challengeMessageId, result: { status: 'ok' } }
 
       requestStartStub.onFirstCall().callsArgWith(0, registerMessageId)
       requestStartStub.onFirstCall().returns(P.resolve(registerResponse))
@@ -226,9 +226,9 @@ Test('KmsConnection', kmsConnTest => {
       requestStartStub.onSecondCall().callsArgWith(0, challengeMessageId)
       requestStartStub.onSecondCall().returns(P.resolve(challengeResponse))
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
 
-      let registerPromise = kmsConnection.register(sidecarId, serviceName)
+      const registerPromise = kmsConnection.register(sidecarId, serviceName)
       registerPromise
         .then(keys => {
           test.deepEqual(JSON.parse(wsEmitter.send.firstCall.args), registerRequest)
@@ -244,26 +244,26 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     registerTest.test('throw error if KMS sends error during registration', test => {
-      let requestStartStub = sandbox.stub()
+      const requestStartStub = sandbox.stub()
       Requests.create.returns({ start: requestStartStub })
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.send = sandbox.stub()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(true)
       WebSocket.create.returns(wsEmitter)
 
-      let sidecarId = 'sidecar1'
+      const sidecarId = 'sidecar1'
 
-      let registerMessageId = `register-${sidecarId}`
-      let registerResponse = { jsonrpc: '2.0', id: registerMessageId, error: { id: 101, message: 'bad stuff' } }
+      const registerMessageId = `register-${sidecarId}`
+      const registerResponse = { jsonrpc: '2.0', id: registerMessageId, error: { id: 101, message: 'bad stuff' } }
 
       requestStartStub.onFirstCall().callsArgWith(0, registerMessageId)
       requestStartStub.onFirstCall().returns(P.resolve(registerResponse))
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
 
-      let registerPromise = kmsConnection.register(sidecarId)
+      const registerPromise = kmsConnection.register(sidecarId)
       registerPromise
         .then(() => {
           test.fail('Should have thrown error')
@@ -278,22 +278,22 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     registerTest.test('throw error if KMS sends error during challenge', test => {
-      let requestStartStub = sandbox.stub()
+      const requestStartStub = sandbox.stub()
       Requests.create.returns({ start: requestStartStub })
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.send = sandbox.stub()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(true)
       WebSocket.create.returns(wsEmitter)
 
-      let sidecarId = 'sidecar1'
+      const sidecarId = 'sidecar1'
 
-      let registerMessageId = `register-${sidecarId}`
-      let registerResponse = { jsonrpc: '2.0', id: registerMessageId, result: { id: sidecarId, batchKey: 'batch-key', rowKey: 'row-key', challenge: 'challenge' } }
+      const registerMessageId = `register-${sidecarId}`
+      const registerResponse = { jsonrpc: '2.0', id: registerMessageId, result: { id: sidecarId, batchKey: 'batch-key', rowKey: 'row-key', challenge: 'challenge' } }
 
-      let challengeMessageId = `challenge-${sidecarId}`
-      let challengeResponse = { jsonrpc: '2.0', id: challengeMessageId, error: { id: 105, message: 'bad challenge' } }
+      const challengeMessageId = `challenge-${sidecarId}`
+      const challengeResponse = { jsonrpc: '2.0', id: challengeMessageId, error: { id: 105, message: 'bad challenge' } }
 
       requestStartStub.onFirstCall().callsArgWith(0, registerMessageId)
       requestStartStub.onFirstCall().returns(P.resolve(registerResponse))
@@ -301,9 +301,9 @@ Test('KmsConnection', kmsConnTest => {
       requestStartStub.onSecondCall().callsArgWith(0, challengeMessageId)
       requestStartStub.onSecondCall().returns(P.resolve(challengeResponse))
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
 
-      let registerPromise = kmsConnection.register(sidecarId)
+      const registerPromise = kmsConnection.register(sidecarId)
       registerPromise
         .then(() => {
           test.fail('Should have thrown error')
@@ -317,22 +317,22 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     registerTest.test('throw error if KMS returns invalid status during challenge', test => {
-      let requestStartStub = sandbox.stub()
+      const requestStartStub = sandbox.stub()
       Requests.create.returns({ start: requestStartStub })
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.send = sandbox.stub()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(true)
       WebSocket.create.returns(wsEmitter)
 
-      let sidecarId = 'sidecar1'
+      const sidecarId = 'sidecar1'
 
-      let registerMessageId = `register-${sidecarId}`
-      let registerResponse = { jsonrpc: '2.0', id: registerMessageId, result: { id: sidecarId, batchKey: 'batch-key', rowKey: 'row-key', challenge: 'challenge' } }
+      const registerMessageId = `register-${sidecarId}`
+      const registerResponse = { jsonrpc: '2.0', id: registerMessageId, result: { id: sidecarId, batchKey: 'batch-key', rowKey: 'row-key', challenge: 'challenge' } }
 
-      let challengeMessageId = `challenge-${sidecarId}`
-      let challengeResponse = { jsonrpc: '2.0', id: challengeMessageId, result: { status: 'nope' } }
+      const challengeMessageId = `challenge-${sidecarId}`
+      const challengeResponse = { jsonrpc: '2.0', id: challengeMessageId, result: { status: 'nope' } }
 
       requestStartStub.onFirstCall().callsArgWith(0, registerMessageId)
       requestStartStub.onFirstCall().returns(P.resolve(registerResponse))
@@ -340,9 +340,9 @@ Test('KmsConnection', kmsConnTest => {
       requestStartStub.onSecondCall().callsArgWith(0, challengeMessageId)
       requestStartStub.onSecondCall().returns(P.resolve(challengeResponse))
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
 
-      let registerPromise = kmsConnection.register(sidecarId)
+      const registerPromise = kmsConnection.register(sidecarId)
       registerPromise
         .then(() => {
           test.fail('Should have thrown error')
@@ -359,14 +359,14 @@ Test('KmsConnection', kmsConnTest => {
 
   kmsConnTest.test('respondToHealthCheck should', respondHcTest => {
     respondHcTest.test('send healthcheck response from request', test => {
-      let id = 'request-id'
-      let request = { id }
-      let healthCheck = {}
-      let jsonRpcResponse = { jsonrpc: '2.0', id, result: healthCheck }
+      const id = 'request-id'
+      const request = { id }
+      const healthCheck = {}
+      const jsonRpcResponse = { jsonrpc: '2.0', id, result: healthCheck }
 
-      let ws = { send: sandbox.stub() }
+      const ws = { send: sandbox.stub() }
 
-      let conn = KmsConnection.create()
+      const conn = KmsConnection.create()
       conn._ws = ws
 
       conn.respondToHealthCheck(request, healthCheck)
@@ -380,23 +380,23 @@ Test('KmsConnection', kmsConnTest => {
 
   kmsConnTest.test('respondToInquiry should', respondInquiryTest => {
     respondInquiryTest.test('send inquiry response to KMS for each found batch', test => {
-      let method = 'inquiry-response'
-      let inquiryId = 'inquiry-id'
-      let requestId = 'response-id'
-      let requestId2 = 'response-id2'
+      const method = 'inquiry-response'
+      const inquiryId = 'inquiry-id'
+      const requestId = 'response-id'
+      const requestId2 = 'response-id2'
 
       uuidStub.onFirstCall().returns(requestId)
       uuidStub.onSecondCall().returns(requestId2)
 
-      let request = { inquiryId }
-      let results = [{ batchId: 'batch-id', data: 'this is data' }, { batchId: 'batch-id2', data: 'more data' }]
+      const request = { inquiryId }
+      const results = [{ batchId: 'batch-id', data: 'this is data' }, { batchId: 'batch-id2', data: 'more data' }]
 
-      let jsonRpcRequest = { jsonrpc: '2.0', id: requestId, method, params: { inquiry: inquiryId, id: results[0].batchId, body: results[0].data, total: 2, item: 1 } }
-      let jsonRpcRequest2 = { jsonrpc: '2.0', id: requestId2, method, params: { inquiry: inquiryId, id: results[1].batchId, body: results[1].data, total: 2, item: 2 } }
+      const jsonRpcRequest = { jsonrpc: '2.0', id: requestId, method, params: { inquiry: inquiryId, id: results[0].batchId, body: results[0].data, total: 2, item: 1 } }
+      const jsonRpcRequest2 = { jsonrpc: '2.0', id: requestId2, method, params: { inquiry: inquiryId, id: results[1].batchId, body: results[1].data, total: 2, item: 2 } }
 
-      let ws = { send: sandbox.stub() }
+      const ws = { send: sandbox.stub() }
 
-      let conn = KmsConnection.create()
+      const conn = KmsConnection.create()
       conn._ws = ws
 
       conn.respondToInquiry(request, results)
@@ -408,20 +408,20 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     respondInquiryTest.test('send special inquiry response to KMS if no results found', test => {
-      let method = 'inquiry-response'
-      let inquiryId = 'inquiry-id'
-      let requestId = 'response-id'
+      const method = 'inquiry-response'
+      const inquiryId = 'inquiry-id'
+      const requestId = 'response-id'
 
       uuidStub.onFirstCall().returns(requestId)
 
-      let request = { inquiryId }
-      let results = []
+      const request = { inquiryId }
+      const results = []
 
-      let jsonRpcRequest = { jsonrpc: '2.0', id: requestId, method, params: { inquiry: inquiryId, total: 0, item: 0 } }
+      const jsonRpcRequest = { jsonrpc: '2.0', id: requestId, method, params: { inquiry: inquiryId, total: 0, item: 0 } }
 
-      let ws = { send: sandbox.stub() }
+      const ws = { send: sandbox.stub() }
 
-      let conn = KmsConnection.create()
+      const conn = KmsConnection.create()
       conn._ws = ws
 
       conn.respondToInquiry(request, results)
@@ -436,26 +436,26 @@ Test('KmsConnection', kmsConnTest => {
 
   kmsConnTest.test('sendBatch should', sendBatchTest => {
     sendBatchTest.test('send batch and return pending promise', test => {
-      let requestId = 'request'
+      const requestId = 'request'
 
-      let method = 'batch'
-      let batch = { batchId: 'batch-id', signature: 'sig' }
-      let jsonRpcRequest = { jsonrpc: '2.0', id: requestId, method, params: { id: 'batch-id', signature: 'sig' } }
+      const method = 'batch'
+      const batch = { batchId: 'batch-id', signature: 'sig' }
+      const jsonRpcRequest = { jsonrpc: '2.0', id: requestId, method, params: { id: 'batch-id', signature: 'sig' } }
 
-      let ws = { send: sandbox.stub() }
+      const ws = { send: sandbox.stub() }
 
-      let requestStartStub = sandbox.stub()
+      const requestStartStub = sandbox.stub()
       Requests.create.returns({ start: requestStartStub })
 
-      let conn = KmsConnection.create()
+      const conn = KmsConnection.create()
       conn._ws = ws
 
-      let result = { test: 'test' }
+      const result = { test: 'test' }
 
       requestStartStub.onFirstCall().callsArgWith(0, requestId)
       requestStartStub.onFirstCall().returns(P.resolve({ result }))
 
-      let requestPromise = conn.sendBatch(batch)
+      const requestPromise = conn.sendBatch(batch)
       requestPromise
         .then(r => {
           test.equal(r, result)
@@ -471,26 +471,26 @@ Test('KmsConnection', kmsConnTest => {
 
   kmsConnTest.test('request should', requestTest => {
     requestTest.test('send JSONRPC request and return pending promise', test => {
-      let requestId = 'request'
+      const requestId = 'request'
 
-      let method = 'test'
-      let params = { key: 'val' }
-      let jsonRpcRequest = { jsonrpc: '2.0', id: requestId, method, params }
+      const method = 'test'
+      const params = { key: 'val' }
+      const jsonRpcRequest = { jsonrpc: '2.0', id: requestId, method, params }
 
-      let ws = { send: sandbox.stub() }
+      const ws = { send: sandbox.stub() }
 
-      let requestStartStub = sandbox.stub()
+      const requestStartStub = sandbox.stub()
       Requests.create.returns({ start: requestStartStub })
 
-      let conn = KmsConnection.create()
+      const conn = KmsConnection.create()
       conn._ws = ws
 
-      let result = { test: 'test' }
+      const result = { test: 'test' }
 
       requestStartStub.onFirstCall().callsArgWith(0, requestId)
       requestStartStub.onFirstCall().returns(P.resolve({ result }))
 
-      let requestPromise = conn.request(method, params)
+      const requestPromise = conn.request(method, params)
       requestPromise
         .then(r => {
           test.equal(r, result)
@@ -506,13 +506,13 @@ Test('KmsConnection', kmsConnTest => {
 
   kmsConnTest.test('respond should', sendResponseTest => {
     sendResponseTest.test('send JSONRPC response', test => {
-      let id = 'id'
-      let result = { key: 'val' }
-      let jsonRpcResponse = { jsonrpc: '2.0', id, result }
+      const id = 'id'
+      const result = { key: 'val' }
+      const jsonRpcResponse = { jsonrpc: '2.0', id, result }
 
-      let ws = { send: sandbox.stub() }
+      const ws = { send: sandbox.stub() }
 
-      let conn = KmsConnection.create()
+      const conn = KmsConnection.create()
       conn._ws = ws
 
       conn.respond(id, result)
@@ -526,13 +526,13 @@ Test('KmsConnection', kmsConnTest => {
 
   kmsConnTest.test('respondError should', sendErrorResponseTest => {
     sendErrorResponseTest.test('send JSONRPC error response', test => {
-      let id = 'id'
-      let error = { id: 101, message: 'error happened' }
-      let jsonRpcErrorResponse = { jsonrpc: '2.0', id, error }
+      const id = 'id'
+      const error = { id: 101, message: 'error happened' }
+      const jsonRpcErrorResponse = { jsonrpc: '2.0', id, error }
 
-      let ws = { send: sandbox.stub() }
+      const ws = { send: sandbox.stub() }
 
-      let conn = KmsConnection.create()
+      const conn = KmsConnection.create()
       conn._ws = ws
 
       conn.respondError(id, error)
@@ -546,23 +546,23 @@ Test('KmsConnection', kmsConnTest => {
 
   kmsConnTest.test('receiving WebSocket close event should', closeEventTest => {
     closeEventTest.test('emit connectionClose event with canReconnect false if normal close', test => {
-      let connCloseSpy = sandbox.spy()
+      const connCloseSpy = sandbox.spy()
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(false)
       WebSocket.create.returns(wsEmitter)
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
       kmsConnection.on('connectionClose', connCloseSpy)
 
-      let connectPromise = kmsConnection.connect()
+      const connectPromise = kmsConnection.connect()
       wsEmitter.emit('open')
 
       connectPromise
         .then(() => {
-          let code = 1000
-          let reason = 'reason'
+          const code = 1000
+          const reason = 'reason'
           wsEmitter.emit('close', code, reason)
 
           test.ok(Logger.error.calledWith(`WebSocket connection closed: ${code} - ${reason}`))
@@ -572,23 +572,23 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     closeEventTest.test('emit close event with canReconnect true if abnormal close', test => {
-      let connCloseSpy = sandbox.spy()
+      const connCloseSpy = sandbox.spy()
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(false)
       WebSocket.create.returns(wsEmitter)
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
       kmsConnection.on('connectionClose', connCloseSpy)
 
-      let connectPromise = kmsConnection.connect()
+      const connectPromise = kmsConnection.connect()
       wsEmitter.emit('open')
 
       connectPromise
         .then(() => {
-          let code = 1006
-          let reason = 'reason'
+          const code = 1006
+          const reason = 'reason'
           wsEmitter.emit('close', code, reason)
 
           test.ok(Logger.error.calledWith(`WebSocket connection closed: ${code} - ${reason}`))
@@ -602,22 +602,22 @@ Test('KmsConnection', kmsConnTest => {
 
   kmsConnTest.test('receiving WebSocket error event should', errorEventTest => {
     errorEventTest.test('emit close event with canReconnect true if error code ECONNREFUSED', test => {
-      let connCloseSpy = sandbox.spy()
+      const connCloseSpy = sandbox.spy()
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(false)
       WebSocket.create.returns(wsEmitter)
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
       kmsConnection.on('connectionClose', connCloseSpy)
 
-      let connectPromise = kmsConnection.connect()
+      const connectPromise = kmsConnection.connect()
       wsEmitter.emit('open')
 
       connectPromise
         .then(() => {
-          let err = new Error()
+          const err = new Error()
           err.code = 'ECONNREFUSED'
           wsEmitter.emit('error', err)
 
@@ -628,22 +628,22 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     errorEventTest.test('emit close event with canReconnect false if no error code', test => {
-      let connCloseSpy = sandbox.spy()
+      const connCloseSpy = sandbox.spy()
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(false)
       WebSocket.create.returns(wsEmitter)
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
       kmsConnection.on('connectionClose', connCloseSpy)
 
-      let connectPromise = kmsConnection.connect()
+      const connectPromise = kmsConnection.connect()
       wsEmitter.emit('open')
 
       connectPromise
         .then(() => {
-          let err = new Error()
+          const err = new Error()
           wsEmitter.emit('error', err)
 
           test.ok(Logger.error.calledWith('Error on WebSocket connection', err))
@@ -657,19 +657,19 @@ Test('KmsConnection', kmsConnTest => {
 
   kmsConnTest.test('receiving WebSocket message event should', messageEventTest => {
     messageEventTest.test('log warning if not JSONRPC message', test => {
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(false)
       WebSocket.create.returns(wsEmitter)
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
 
-      let connectPromise = kmsConnection.connect()
+      const connectPromise = kmsConnection.connect()
       wsEmitter.emit('open')
 
       connectPromise
         .then(() => {
-          let data = JSON.stringify({ id: 'id' })
+          const data = JSON.stringify({ id: 'id' })
           wsEmitter.emit('message', data)
 
           test.ok(Logger.warn.calledWith(`Invalid message format received from KMS: ${data}`))
@@ -678,22 +678,22 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     messageEventTest.test('emit healthCheck event for healthcheck request method', test => {
-      let healthCheckSpy = sandbox.spy()
+      const healthCheckSpy = sandbox.spy()
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(false)
       WebSocket.create.returns(wsEmitter)
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
       kmsConnection.on('healthCheck', healthCheckSpy)
 
-      let connectPromise = kmsConnection.connect()
+      const connectPromise = kmsConnection.connect()
       wsEmitter.emit('open')
 
       connectPromise
         .then(() => {
-          let healthCheck = { jsonrpc: '2.0', id: 'e1c609bd-e147-460b-ae61-98264bc935ad', method: 'healthcheck', params: { level: 'ping' } }
+          const healthCheck = { jsonrpc: '2.0', id: 'e1c609bd-e147-460b-ae61-98264bc935ad', method: 'healthcheck', params: { level: 'ping' } }
           wsEmitter.emit('message', JSON.stringify(healthCheck))
 
           test.ok(healthCheckSpy.calledWith(sandbox.match({
@@ -705,17 +705,17 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     messageEventTest.test('emit inquiry event for inquiry request method', test => {
-      let inquirySpy = sandbox.spy()
+      const inquirySpy = sandbox.spy()
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(false)
       WebSocket.create.returns(wsEmitter)
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
       kmsConnection.on('inquiry', inquirySpy)
 
-      let connectPromise = kmsConnection.connect()
+      const connectPromise = kmsConnection.connect()
       wsEmitter.emit('open')
 
       const now = Moment()
@@ -726,7 +726,7 @@ Test('KmsConnection', kmsConnTest => {
 
       connectPromise
         .then(() => {
-          let inquiry = { jsonrpc: '2.0', id: 'e1c609bd-e147-460b-ae61-98264bc935ad', method: 'inquiry', params: { inquiry: '4e4f2a70-e0d6-42dc-9efb-6d23060ccd6f', startTime, endTime } }
+          const inquiry = { jsonrpc: '2.0', id: 'e1c609bd-e147-460b-ae61-98264bc935ad', method: 'inquiry', params: { inquiry: '4e4f2a70-e0d6-42dc-9efb-6d23060ccd6f', startTime, endTime } }
           wsEmitter.emit('message', JSON.stringify(inquiry))
 
           test.ok(inquirySpy.calledWith(sandbox.match({
@@ -740,19 +740,19 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     messageEventTest.test('log warning for unknown request method', test => {
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(false)
       WebSocket.create.returns(wsEmitter)
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
 
-      let connectPromise = kmsConnection.connect()
+      const connectPromise = kmsConnection.connect()
       wsEmitter.emit('open')
 
       connectPromise
         .then(() => {
-          let unknown = JSON.stringify({ jsonrpc: '2.0', id: 'e1c609bd-e147-460b-ae61-98264bc935ad', method: 'unknown', params: { test: 1 } })
+          const unknown = JSON.stringify({ jsonrpc: '2.0', id: 'e1c609bd-e147-460b-ae61-98264bc935ad', method: 'unknown', params: { test: 1 } })
           wsEmitter.emit('message', unknown)
 
           test.ok(Logger.warn.calledWith(`Unhandled request from KMS received: ${unknown}`))
@@ -761,27 +761,27 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     messageEventTest.test('complete pending request with matching response id', test => {
-      let id = 'test'
+      const id = 'test'
 
-      let requestCompleteStub = sandbox.stub()
-      let requestExistsStub = sandbox.stub()
+      const requestCompleteStub = sandbox.stub()
+      const requestExistsStub = sandbox.stub()
       Requests.create.returns({ complete: requestCompleteStub, exists: requestExistsStub })
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(false)
       WebSocket.create.returns(wsEmitter)
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
 
-      let connectPromise = kmsConnection.connect()
+      const connectPromise = kmsConnection.connect()
       wsEmitter.emit('open')
 
       requestExistsStub.withArgs(id).returns(true)
 
       connectPromise
         .then(() => {
-          let response = { jsonrpc: '2.0', id, result: { test: 1 } }
+          const response = { jsonrpc: '2.0', id, result: { test: 1 } }
           wsEmitter.emit('message', JSON.stringify(response))
 
           test.ok(requestCompleteStub.calledOnce)
@@ -793,27 +793,27 @@ Test('KmsConnection', kmsConnTest => {
     })
 
     messageEventTest.test('log warning for unknown response id', test => {
-      let id = 'test'
+      const id = 'test'
 
-      let requestCompleteStub = sandbox.stub()
-      let requestExistsStub = sandbox.stub()
+      const requestCompleteStub = sandbox.stub()
+      const requestExistsStub = sandbox.stub()
       Requests.create.returns({ complete: requestCompleteStub, exists: requestExistsStub })
 
-      let wsEmitter = new EventEmitter()
+      const wsEmitter = new EventEmitter()
       wsEmitter.connect = sandbox.stub()
       wsEmitter.isConnected = sandbox.stub().returns(false)
       WebSocket.create.returns(wsEmitter)
 
-      let kmsConnection = KmsConnection.create()
+      const kmsConnection = KmsConnection.create()
 
-      let connectPromise = kmsConnection.connect()
+      const connectPromise = kmsConnection.connect()
       wsEmitter.emit('open')
 
       requestExistsStub.withArgs(id).returns(false)
 
       connectPromise
         .then(() => {
-          let response = { jsonrpc: '2.0', id: 'test2', result: { test: 1 } }
+          const response = { jsonrpc: '2.0', id: 'test2', result: { test: 1 } }
           wsEmitter.emit('message', JSON.stringify(response))
 
           test.notOk(requestCompleteStub.called)
