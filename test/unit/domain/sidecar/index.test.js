@@ -24,12 +24,12 @@ Test('Sidecars service', serviceTest => {
 
   serviceTest.test('create should', createTest => {
     createTest.test('persist sidecar to model', test => {
-      let sidecarId = 'sidecar-id'
-      let serviceName = 'test'
-      let version = '0.0.2'
-      let created = Moment()
+      const sidecarId = 'sidecar-id'
+      const serviceName = 'test'
+      const version = '0.0.2'
+      const created = Moment()
 
-      let savedSidecar = {}
+      const savedSidecar = {}
       Model.create.returns(P.resolve(savedSidecar))
 
       Service.create(sidecarId, serviceName, version, created)

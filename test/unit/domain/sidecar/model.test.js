@@ -27,8 +27,8 @@ Test('Sidecars model', modelTest => {
 
   modelTest.test('create should', createTest => {
     createTest.test('save payload and return new sidecar', test => {
-      let payload = { sidecarId: 'sidecar-id', serviceName: 'test service', version: '0.0.1' }
-      let insertedSidecar = { sidecarId: 'id' }
+      const payload = { sidecarId: 'sidecar-id', serviceName: 'test service', version: '0.0.1' }
+      const insertedSidecar = { sidecarId: 'id' }
 
       Db.sidecars.insert.returns(P.resolve(insertedSidecar))
 

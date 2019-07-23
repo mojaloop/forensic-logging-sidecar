@@ -39,7 +39,7 @@ Test('Sidecar', sidecarTest => {
     sandbox.stub(Health)
     uuidStub = sandbox.stub()
 
-    Sidecar = Proxyquire(`${src}/sidecar`, { 'uuid4': uuidStub })
+    Sidecar = Proxyquire(`${src}/sidecar`, { uuid4: uuidStub })
 
     t.end()
   })
@@ -51,23 +51,23 @@ Test('Sidecar', sidecarTest => {
 
   sidecarTest.test('create should', createTest => {
     createTest.test('create new sidecar and setup', test => {
-      let now = new Date()
+      const now = new Date()
       Moment.utc.returns(now)
 
-      let sidecarId = 'sidecar-id'
+      const sidecarId = 'sidecar-id'
       uuidStub.returns(sidecarId)
 
-      let kmsOnStub = sandbox.stub()
-      KmsConnection.create.returns({ 'on': kmsOnStub })
+      const kmsOnStub = sandbox.stub()
+      KmsConnection.create.returns({ on: kmsOnStub })
 
-      let socketOnStub = sandbox.stub()
-      SocketListener.create.returns({ 'on': socketOnStub })
+      const socketOnStub = sandbox.stub()
+      SocketListener.create.returns({ on: socketOnStub })
 
-      let batchTrackerOnStub = sandbox.stub()
-      BatchTracker.create.returns({ 'on': batchTrackerOnStub })
+      const batchTrackerOnStub = sandbox.stub()
+      BatchTracker.create.returns({ on: batchTrackerOnStub })
 
-      let settings = { serviceName: 'test-service', kms: { url: 'ws://test.com', pingInterval: 30000, requestTimeout: 15000, connectTimeout: 9000, reconnectInterval: 2000 }, port: 1234, batchSize: 50, batchTimeInterval: 45000, version: '1.2.3', healthPort: 2345 }
-      let sidecar = Sidecar.create(settings)
+      const settings = { serviceName: 'test-service', kms: { url: 'ws://test.com', pingInterval: 30000, requestTimeout: 15000, connectTimeout: 9000, reconnectInterval: 2000 }, port: 1234, batchSize: 50, batchTimeInterval: 45000, version: '1.2.3', healthPort: 2345 }
+      const sidecar = Sidecar.create(settings)
 
       test.equal(sidecar.id, sidecarId)
       test.equal(sidecar.port, settings.port)
@@ -96,33 +96,33 @@ Test('Sidecar', sidecarTest => {
 
   sidecarTest.test('start should', startTest => {
     startTest.test('save sidecar to datastore then register with KMS then start SocketListener listening', test => {
-      let now = new Date()
+      const now = new Date()
       Moment.utc.returns(now)
 
-      let sidecarId = 'sidecar-id'
+      const sidecarId = 'sidecar-id'
       uuidStub.returns(sidecarId)
 
-      let connectStub = sandbox.stub()
+      const connectStub = sandbox.stub()
       connectStub.returns(P.resolve())
 
-      let keys = { batchKey: 'batch', rowKey: 'row' }
-      let registerStub = sandbox.stub()
+      const keys = { batchKey: 'batch', rowKey: 'row' }
+      const registerStub = sandbox.stub()
       registerStub.returns(P.resolve(keys))
 
-      let keyStore = { store: sandbox.stub() }
+      const keyStore = { store: sandbox.stub() }
       Keys.create.returns(keyStore)
 
-      KmsConnection.create.returns({ connect: connectStub, register: registerStub, 'on': sandbox.stub() })
+      KmsConnection.create.returns({ connect: connectStub, register: registerStub, on: sandbox.stub() })
 
-      BatchTracker.create.returns({ 'on': sandbox.stub() })
+      BatchTracker.create.returns({ on: sandbox.stub() })
 
-      let listenStub = sandbox.stub()
-      SocketListener.create.returns({ 'on': sandbox.stub(), listen: listenStub })
+      const listenStub = sandbox.stub()
+      SocketListener.create.returns({ on: sandbox.stub(), listen: listenStub })
 
       SidecarService.create.returns(P.resolve())
 
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3', healthPort: 2345 }
-      let sidecar = Sidecar.create(settings)
+      const settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3', healthPort: 2345 }
+      const sidecar = Sidecar.create(settings)
 
       sidecar.start()
         .then(() => {
@@ -142,31 +142,31 @@ Test('Sidecar', sidecarTest => {
 
   sidecarTest.test('stop should', stopTest => {
     stopTest.test('stop services and emit close event', test => {
-      let connectStub = sandbox.stub()
+      const connectStub = sandbox.stub()
       connectStub.returns(P.resolve())
 
-      let keys = { batchKey: 'batch', rowKey: 'row' }
-      let registerStub = sandbox.stub()
+      const keys = { batchKey: 'batch', rowKey: 'row' }
+      const registerStub = sandbox.stub()
       registerStub.returns(P.resolve(keys))
 
-      let keyStore = { store: sandbox.stub() }
+      const keyStore = { store: sandbox.stub() }
       Keys.create.returns(keyStore)
 
-      let kmsCloseStub = sandbox.stub()
+      const kmsCloseStub = sandbox.stub()
 
-      KmsConnection.create.returns({ connect: connectStub, register: registerStub, 'on': sandbox.stub(), close: kmsCloseStub })
+      KmsConnection.create.returns({ connect: connectStub, register: registerStub, on: sandbox.stub(), close: kmsCloseStub })
 
-      BatchTracker.create.returns({ 'on': sandbox.stub() })
+      BatchTracker.create.returns({ on: sandbox.stub() })
 
-      let listenStub = sandbox.stub()
-      let socketCloseStub = sandbox.stub()
-      SocketListener.create.returns({ 'on': sandbox.stub(), listen: listenStub, close: socketCloseStub })
+      const listenStub = sandbox.stub()
+      const socketCloseStub = sandbox.stub()
+      SocketListener.create.returns({ on: sandbox.stub(), listen: listenStub, close: socketCloseStub })
 
       SidecarService.create.returns(P.resolve())
 
-      let closeSpy = sandbox.spy()
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3', healthPort: 2345 }
-      let sidecar = Sidecar.create(settings)
+      const closeSpy = sandbox.spy()
+      const settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3', healthPort: 2345 }
+      const sidecar = Sidecar.create(settings)
       sidecar.on('close', closeSpy)
 
       sidecar.start()
@@ -185,48 +185,48 @@ Test('Sidecar', sidecarTest => {
 
   sidecarTest.test('receving KMS connectionClose event should', kmsCloseTest => {
     kmsCloseTest.test('attempt to reconnect to KMS if canReconnet flag true', test => {
-      let id = 'id1'
-      let reconnectId = 'id2'
+      const id = 'id1'
+      const reconnectId = 'id2'
 
       uuidStub.onFirstCall().returns(id)
       uuidStub.onSecondCall().returns(reconnectId)
 
-      let now = new Date()
-      let reconnectNow = Moment(now).add(1, 'day')
+      const now = new Date()
+      const reconnectNow = Moment(now).add(1, 'day')
 
       Moment.utc.returns(reconnectNow)
 
-      let connectStub = sandbox.stub()
-      let connectPromise = P.resolve()
+      const connectStub = sandbox.stub()
+      const connectPromise = P.resolve()
       connectStub.returns(connectPromise)
 
-      let reconnectKeys = { batchKey: 'reconnect-batch', rowKey: 'reconnect-row' }
+      const reconnectKeys = { batchKey: 'reconnect-batch', rowKey: 'reconnect-row' }
 
-      let storePromise = P.resolve()
-      let keyStore = { store: sandbox.stub().returns(storePromise) }
+      const storePromise = P.resolve()
+      const keyStore = { store: sandbox.stub().returns(storePromise) }
       Keys.create.returns(keyStore)
 
-      let registerStub = sandbox.stub()
-      let registerPromise = P.resolve(reconnectKeys)
+      const registerStub = sandbox.stub()
+      const registerPromise = P.resolve(reconnectKeys)
       registerStub.returns(registerPromise)
 
-      let kmsConnection = new EventEmitter()
+      const kmsConnection = new EventEmitter()
       kmsConnection.connect = connectStub
       kmsConnection.register = registerStub
       KmsConnection.create.returns(kmsConnection)
 
-      BatchTracker.create.returns({ 'on': sandbox.stub() })
+      BatchTracker.create.returns({ on: sandbox.stub() })
 
-      let resumePromise = P.resolve()
-      let pausePromise = P.resolve()
-      let socketListener = { 'on': sandbox.stub(), listen: sandbox.stub(), pause: sandbox.stub().returns(pausePromise), resume: sandbox.stub().returns(resumePromise) }
+      const resumePromise = P.resolve()
+      const pausePromise = P.resolve()
+      const socketListener = { on: sandbox.stub(), listen: sandbox.stub(), pause: sandbox.stub().returns(pausePromise), resume: sandbox.stub().returns(resumePromise) }
       SocketListener.create.returns(socketListener)
 
-      let reconnectCreatePromise = P.resolve()
+      const reconnectCreatePromise = P.resolve()
       SidecarService.create.returns(reconnectCreatePromise)
 
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3', healthPort: 2345 }
-      let sidecar = Sidecar.create(settings)
+      const settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3', healthPort: 2345 }
+      const sidecar = Sidecar.create(settings)
 
       test.equal(sidecar.id, id)
       test.equal(sidecar.startTime, reconnectNow)
@@ -266,52 +266,52 @@ Test('Sidecar', sidecarTest => {
     })
 
     kmsCloseTest.test('stop sidecar if error during reconnect attempt', test => {
-      let id = 'id1'
-      let reconnectId = 'id2'
+      const id = 'id1'
+      const reconnectId = 'id2'
 
       uuidStub.onFirstCall().returns(id)
       uuidStub.onSecondCall().returns(reconnectId)
 
-      let now = new Date()
-      let reconnectNow = Moment(now).add(1, 'day')
+      const now = new Date()
+      const reconnectNow = Moment(now).add(1, 'day')
 
       Moment.utc.returns(reconnectNow)
 
-      let connectStub = sandbox.stub()
-      let connectPromise = P.resolve()
+      const connectStub = sandbox.stub()
+      const connectPromise = P.resolve()
       connectStub.returns(connectPromise)
 
-      let reconnectKeys = { batchKey: 'reconnect-batch', rowKey: 'reconnect-row' }
+      const reconnectKeys = { batchKey: 'reconnect-batch', rowKey: 'reconnect-row' }
 
-      let storePromise = P.resolve()
-      let keyStore = { store: sandbox.stub().returns(storePromise) }
+      const storePromise = P.resolve()
+      const keyStore = { store: sandbox.stub().returns(storePromise) }
       Keys.create.returns(keyStore)
 
-      let registerStub = sandbox.stub()
-      let registerPromise = P.resolve(reconnectKeys)
+      const registerStub = sandbox.stub()
+      const registerPromise = P.resolve(reconnectKeys)
       registerStub.returns(registerPromise)
 
-      let kmsConnection = new EventEmitter()
+      const kmsConnection = new EventEmitter()
       kmsConnection.connect = connectStub
       kmsConnection.register = registerStub
       kmsConnection.close = sandbox.stub()
       KmsConnection.create.returns(kmsConnection)
 
-      BatchTracker.create.returns({ 'on': sandbox.stub() })
+      BatchTracker.create.returns({ on: sandbox.stub() })
 
-      let resumeError = new Error('Bad error')
-      let resumePromise = P.reject(resumeError)
-      let socketCloseStub = sandbox.stub()
-      let pausePromise = P.resolve()
-      let socketListener = { 'on': sandbox.stub(), listen: sandbox.stub(), pause: sandbox.stub().returns(pausePromise), close: socketCloseStub, resume: sandbox.stub().returns(resumePromise) }
+      const resumeError = new Error('Bad error')
+      const resumePromise = P.reject(resumeError)
+      const socketCloseStub = sandbox.stub()
+      const pausePromise = P.resolve()
+      const socketListener = { on: sandbox.stub(), listen: sandbox.stub(), pause: sandbox.stub().returns(pausePromise), close: socketCloseStub, resume: sandbox.stub().returns(resumePromise) }
       SocketListener.create.returns(socketListener)
 
-      let reconnectCreatePromise = P.resolve()
+      const reconnectCreatePromise = P.resolve()
       SidecarService.create.returns(reconnectCreatePromise)
 
-      let closeSpy = sandbox.spy()
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
-      let sidecar = Sidecar.create(settings)
+      const closeSpy = sandbox.spy()
+      const settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
+      const sidecar = Sidecar.create(settings)
       sidecar.on('close', closeSpy)
 
       test.equal(sidecar.id, id)
@@ -359,32 +359,32 @@ Test('Sidecar', sidecarTest => {
     })
 
     kmsCloseTest.test('stop sidecar if canReconnect flag flase', test => {
-      let connectStub = sandbox.stub()
+      const connectStub = sandbox.stub()
       connectStub.returns(P.resolve())
 
-      let keys = { batchKey: 'batch', rowKey: 'row' }
-      let registerStub = sandbox.stub()
+      const keys = { batchKey: 'batch', rowKey: 'row' }
+      const registerStub = sandbox.stub()
       registerStub.returns(P.resolve(keys))
 
-      let keyStore = { store: sandbox.stub() }
+      const keyStore = { store: sandbox.stub() }
       Keys.create.returns(keyStore)
 
-      let kmsConnection = new EventEmitter()
+      const kmsConnection = new EventEmitter()
       kmsConnection.connect = connectStub
       kmsConnection.register = registerStub
       kmsConnection.close = sandbox.stub()
       KmsConnection.create.returns(kmsConnection)
 
-      BatchTracker.create.returns({ 'on': sandbox.stub() })
+      BatchTracker.create.returns({ on: sandbox.stub() })
 
-      let socketCloseStub = sandbox.stub()
-      SocketListener.create.returns({ 'on': sandbox.stub(), listen: sandbox.stub(), close: socketCloseStub })
+      const socketCloseStub = sandbox.stub()
+      SocketListener.create.returns({ on: sandbox.stub(), listen: sandbox.stub(), close: socketCloseStub })
 
       SidecarService.create.returns(P.resolve())
 
-      let closeSpy = sandbox.spy()
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
-      let sidecar = Sidecar.create(settings)
+      const closeSpy = sandbox.spy()
+      const settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
+      const sidecar = Sidecar.create(settings)
       sidecar.on('close', closeSpy)
 
       sidecar.start()
@@ -404,44 +404,44 @@ Test('Sidecar', sidecarTest => {
 
   sidecarTest.test('receving KMS inquiry event should', inquiryTest => {
     inquiryTest.test('find batches for inquiry and send to KMS', test => {
-      let connectStub = sandbox.stub()
+      const connectStub = sandbox.stub()
       connectStub.returns(P.resolve())
 
-      let keys = { batchKey: 'batch', rowKey: 'row' }
-      let registerStub = sandbox.stub()
+      const keys = { batchKey: 'batch', rowKey: 'row' }
+      const registerStub = sandbox.stub()
       registerStub.returns(P.resolve(keys))
 
-      let keyStore = { store: sandbox.stub() }
+      const keyStore = { store: sandbox.stub() }
       Keys.create.returns(keyStore)
 
-      let kmsConnection = new EventEmitter()
+      const kmsConnection = new EventEmitter()
       kmsConnection.connect = connectStub
       kmsConnection.register = registerStub
       kmsConnection.respondToInquiry = sandbox.stub().returns(P.resolve())
       KmsConnection.create.returns(kmsConnection)
 
-      SocketListener.create.returns({ 'on': sandbox.stub(), listen: sandbox.stub() })
+      SocketListener.create.returns({ on: sandbox.stub(), listen: sandbox.stub() })
 
-      BatchTracker.create.returns({ 'on': sandbox.stub() })
+      BatchTracker.create.returns({ on: sandbox.stub() })
 
-      let found = [{ batchId: 'batch1', data: 'data' }, { batchId: 'batch2', data: 'data2' }]
-      let findPromise = P.resolve(found)
+      const found = [{ batchId: 'batch1', data: 'data' }, { batchId: 'batch2', data: 'data2' }]
+      const findPromise = P.resolve(found)
       BatchService.findForService.returns(findPromise)
 
-      let sendId = 'send-id'
-      let sendId2 = 'send-id2'
+      const sendId = 'send-id'
+      const sendId2 = 'send-id2'
       uuidStub.onSecondCall().returns(sendId)
       uuidStub.onThirdCall().returns(sendId2)
 
       SidecarService.create.returns(P.resolve())
 
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
-      let sidecar = Sidecar.create(settings)
+      const settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
+      const sidecar = Sidecar.create(settings)
 
-      let now = Moment()
-      let start = Moment(now).subtract(1, 'month')
+      const now = Moment()
+      const start = Moment(now).subtract(1, 'month')
 
-      let request = { id: 'id', inquiryId: 'inquiry-id', startTime: start.toISOString(), endTime: now.toISOString() }
+      const request = { id: 'id', inquiryId: 'inquiry-id', startTime: start.toISOString(), endTime: now.toISOString() }
       sidecar.start()
         .then(() => {
           kmsConnection.emit('inquiry', request)
@@ -462,36 +462,36 @@ Test('Sidecar', sidecarTest => {
 
   sidecarTest.test('receving KMS healthCheck event should', healthCheckTest => {
     healthCheckTest.test('run healthcheck and send response to KMS if ping', test => {
-      let connectStub = sandbox.stub()
+      const connectStub = sandbox.stub()
       connectStub.returns(P.resolve())
 
-      let keys = { batchKey: 'batch', rowKey: 'row' }
-      let registerStub = sandbox.stub()
+      const keys = { batchKey: 'batch', rowKey: 'row' }
+      const registerStub = sandbox.stub()
       registerStub.returns(P.resolve(keys))
 
-      let keyStore = { store: sandbox.stub() }
+      const keyStore = { store: sandbox.stub() }
       Keys.create.returns(keyStore)
 
-      let kmsConnection = new EventEmitter()
+      const kmsConnection = new EventEmitter()
       kmsConnection.connect = connectStub
       kmsConnection.register = registerStub
       kmsConnection.respondToHealthCheck = sandbox.stub().returns(P.resolve())
       KmsConnection.create.returns(kmsConnection)
 
-      SocketListener.create.returns({ 'on': sandbox.stub(), listen: sandbox.stub() })
+      SocketListener.create.returns({ on: sandbox.stub(), listen: sandbox.stub() })
 
-      BatchTracker.create.returns({ 'on': sandbox.stub() })
+      BatchTracker.create.returns({ on: sandbox.stub() })
 
-      let healthCheck = {}
-      let healthCheckPromise = P.resolve(healthCheck)
+      const healthCheck = {}
+      const healthCheckPromise = P.resolve(healthCheck)
       HealthCheck.ping.returns(healthCheckPromise)
 
       SidecarService.create.returns(P.resolve())
 
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
-      let sidecar = Sidecar.create(settings)
+      const settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
+      const sidecar = Sidecar.create(settings)
 
-      let request = { id: 1, 'level': 'ping' }
+      const request = { id: 1, level: 'ping' }
       sidecar.start()
         .then(() => {
           kmsConnection.emit('healthCheck', request)
@@ -507,31 +507,31 @@ Test('Sidecar', sidecarTest => {
     })
 
     healthCheckTest.test('do not run healthcheck if level is not ping', test => {
-      let connectStub = sandbox.stub()
+      const connectStub = sandbox.stub()
       connectStub.returns(P.resolve())
 
-      let keys = { batchKey: 'batch', rowKey: 'row' }
-      let registerStub = sandbox.stub()
+      const keys = { batchKey: 'batch', rowKey: 'row' }
+      const registerStub = sandbox.stub()
       registerStub.returns(P.resolve(keys))
 
-      let keyStore = { store: sandbox.stub() }
+      const keyStore = { store: sandbox.stub() }
       Keys.create.returns(keyStore)
 
-      let kmsConnection = new EventEmitter()
+      const kmsConnection = new EventEmitter()
       kmsConnection.connect = connectStub
       kmsConnection.register = registerStub
       KmsConnection.create.returns(kmsConnection)
 
-      SocketListener.create.returns({ 'on': sandbox.stub(), listen: sandbox.stub() })
+      SocketListener.create.returns({ on: sandbox.stub(), listen: sandbox.stub() })
 
-      BatchTracker.create.returns({ 'on': sandbox.stub() })
+      BatchTracker.create.returns({ on: sandbox.stub() })
 
       SidecarService.create.returns(P.resolve())
 
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
-      let sidecar = Sidecar.create(settings)
+      const settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
+      const sidecar = Sidecar.create(settings)
 
-      let request = { id: 1, 'level': 'details' }
+      const request = { id: 1, level: 'details' }
       sidecar.start()
         .then(() => {
           kmsConnection.emit('healthCheck', request)
@@ -546,38 +546,38 @@ Test('Sidecar', sidecarTest => {
 
   sidecarTest.test('receiving SocketListener message event should', messageTest => {
     messageTest.test('increment sequence and save received message as an event', test => {
-      let startSequence = 5
+      const startSequence = 5
 
-      let connectStub = sandbox.stub()
+      const connectStub = sandbox.stub()
       connectStub.returns(P.resolve())
 
-      let keys = { batchKey: 'batch', rowKey: 'row' }
-      let registerStub = sandbox.stub()
+      const keys = { batchKey: 'batch', rowKey: 'row' }
+      const registerStub = sandbox.stub()
       registerStub.returns(P.resolve(keys))
 
-      let keyStore = { store: sandbox.stub(), getRowKey: sandbox.stub().returns(keys.rowKey) }
+      const keyStore = { store: sandbox.stub(), getRowKey: sandbox.stub().returns(keys.rowKey) }
       Keys.create.returns(keyStore)
 
-      KmsConnection.create.returns({ connect: connectStub, register: registerStub, 'on': sandbox.stub() })
+      KmsConnection.create.returns({ connect: connectStub, register: registerStub, on: sandbox.stub() })
 
-      let eventCreatedStub = sandbox.stub()
-      BatchTracker.create.returns({ eventCreated: eventCreatedStub, 'on': sandbox.stub() })
+      const eventCreatedStub = sandbox.stub()
+      BatchTracker.create.returns({ eventCreated: eventCreatedStub, on: sandbox.stub() })
 
-      let socketListener = new EventEmitter()
+      const socketListener = new EventEmitter()
       socketListener.listen = sandbox.stub()
       SocketListener.create.returns(socketListener)
 
-      let event = { eventId: 'event-id', sequence: startSequence + 1 }
-      let eventPromise = P.resolve(event)
+      const event = { eventId: 'event-id', sequence: startSequence + 1 }
+      const eventPromise = P.resolve(event)
       EventService.create.returns(eventPromise)
 
       SidecarService.create.returns(P.resolve())
 
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
-      let sidecar = Sidecar.create(settings)
+      const settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
+      const sidecar = Sidecar.create(settings)
       sidecar._sequence = startSequence
 
-      let msg = JSON.stringify({ id: 1, name: 'test' })
+      const msg = JSON.stringify({ id: 1, name: 'test' })
       sidecar.start()
         .then(() => {
           socketListener.emit('message', msg)
@@ -599,41 +599,41 @@ Test('Sidecar', sidecarTest => {
 
   sidecarTest.test('receiving BatchTracker batchReady event should', messageTest => {
     messageTest.test('create batch from received event ids and send to KMS', test => {
-      let batchId = 'batch-id'
-      let batchSignature = 'sig'
+      const batchId = 'batch-id'
+      const batchSignature = 'sig'
 
-      let connectStub = sandbox.stub()
+      const connectStub = sandbox.stub()
       connectStub.returns(P.resolve())
 
-      let keys = { batchKey: 'batch', rowKey: 'row' }
-      let registerStub = sandbox.stub()
+      const keys = { batchKey: 'batch', rowKey: 'row' }
+      const registerStub = sandbox.stub()
       registerStub.returns(P.resolve(keys))
 
-      let keyStore = { store: sandbox.stub(), getBatchKey: sandbox.stub().returns(keys.batchKey) }
+      const keyStore = { store: sandbox.stub(), getBatchKey: sandbox.stub().returns(keys.batchKey) }
       Keys.create.returns(keyStore)
 
-      let kmsBatchResponse = { result: { id: batchId } }
-      let kmsBatchPromise = P.resolve(kmsBatchResponse)
-      let sendBatchStub = sandbox.stub().returns(kmsBatchPromise)
+      const kmsBatchResponse = { result: { id: batchId } }
+      const kmsBatchPromise = P.resolve(kmsBatchResponse)
+      const sendBatchStub = sandbox.stub().returns(kmsBatchPromise)
 
-      KmsConnection.create.returns({ connect: connectStub, register: registerStub, sendBatch: sendBatchStub, 'on': sandbox.stub() })
+      KmsConnection.create.returns({ connect: connectStub, register: registerStub, sendBatch: sendBatchStub, on: sandbox.stub() })
 
-      SocketListener.create.returns({ 'on': sandbox.stub(), listen: sandbox.stub() })
+      SocketListener.create.returns({ on: sandbox.stub(), listen: sandbox.stub() })
 
-      let batchTracker = new EventEmitter()
+      const batchTracker = new EventEmitter()
       batchTracker.event = sandbox.stub()
       BatchTracker.create.returns(batchTracker)
 
-      let batchEventIds = [1, 2]
+      const batchEventIds = [1, 2]
 
-      let batch = { batchId, signature: batchSignature }
-      let batchPromise = P.resolve(batch)
+      const batch = { batchId, signature: batchSignature }
+      const batchPromise = P.resolve(batch)
       BatchService.create.returns(batchPromise)
 
       SidecarService.create.returns(P.resolve())
 
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
-      let sidecar = Sidecar.create(settings)
+      const settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
+      const sidecar = Sidecar.create(settings)
 
       sidecar.start()
         .then(() => {
@@ -652,41 +652,41 @@ Test('Sidecar', sidecarTest => {
     })
 
     messageTest.test('log error if thrown while sending batch to KMS', test => {
-      let batchId = 'batch-id'
-      let batchSignature = 'sig'
+      const batchId = 'batch-id'
+      const batchSignature = 'sig'
 
-      let connectStub = sandbox.stub()
+      const connectStub = sandbox.stub()
       connectStub.returns(P.resolve())
 
-      let keys = { batchKey: 'batch', rowKey: 'row' }
-      let registerStub = sandbox.stub()
+      const keys = { batchKey: 'batch', rowKey: 'row' }
+      const registerStub = sandbox.stub()
       registerStub.returns(P.resolve(keys))
 
-      let keyStore = { store: sandbox.stub(), getBatchKey: sandbox.stub().returns(keys.batchKey) }
+      const keyStore = { store: sandbox.stub(), getBatchKey: sandbox.stub().returns(keys.batchKey) }
       Keys.create.returns(keyStore)
 
-      let err = new Error('error sending batch')
-      let kmsBatchPromise = P.reject(err)
-      let sendBatchStub = sandbox.stub().returns(kmsBatchPromise)
+      const err = new Error('error sending batch')
+      const kmsBatchPromise = P.reject(err)
+      const sendBatchStub = sandbox.stub().returns(kmsBatchPromise)
 
-      KmsConnection.create.returns({ connect: connectStub, register: registerStub, sendBatch: sendBatchStub, 'on': sandbox.stub() })
+      KmsConnection.create.returns({ connect: connectStub, register: registerStub, sendBatch: sendBatchStub, on: sandbox.stub() })
 
-      SocketListener.create.returns({ 'on': sandbox.stub(), listen: sandbox.stub() })
+      SocketListener.create.returns({ on: sandbox.stub(), listen: sandbox.stub() })
 
-      let batchTracker = new EventEmitter()
+      const batchTracker = new EventEmitter()
       batchTracker.event = sandbox.stub()
       BatchTracker.create.returns(batchTracker)
 
-      let batchEventIds = [1, 2]
+      const batchEventIds = [1, 2]
 
-      let batch = { batchId, signature: batchSignature }
-      let batchPromise = P.resolve(batch)
+      const batch = { batchId, signature: batchSignature }
+      const batchPromise = P.resolve(batch)
       BatchService.create.returns(batchPromise)
 
       SidecarService.create.returns(P.resolve())
 
-      let settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
-      let sidecar = Sidecar.create(settings)
+      const settings = { serviceName: 'test-service', kmsUrl: 'ws://test.com', kmsPingInterval: 30000, port: 1234, batchSize: 50, version: '1.2.3' }
+      const sidecar = Sidecar.create(settings)
 
       sidecar.start()
         .then(() => {

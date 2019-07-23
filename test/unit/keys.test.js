@@ -20,7 +20,7 @@ Test('Keys', keysTest => {
 
   keysTest.test('create should', createTest => {
     createTest.test('create new key store and set properties', test => {
-      let keyStore = Keys.create()
+      const keyStore = Keys.create()
 
       test.equal(keyStore._rowKey, null)
       test.equal(keyStore._batchKey, null)
@@ -32,9 +32,9 @@ Test('Keys', keysTest => {
 
   keysTest.test('store should', storeTest => {
     storeTest.test('store batch key and row key', test => {
-      let keyStore = Keys.create()
+      const keyStore = Keys.create()
 
-      let keys = { rowKey: 'row-key', batchKey: 'batch-key' }
+      const keys = { rowKey: 'row-key', batchKey: 'batch-key' }
 
       keyStore.store(keys)
       test.equal(keyStore._rowKey, keys.rowKey)
@@ -47,9 +47,9 @@ Test('Keys', keysTest => {
 
   keysTest.test('getRowKey should', rowKeyTest => {
     rowKeyTest.test('return stored row key', test => {
-      let keyStore = Keys.create()
+      const keyStore = Keys.create()
 
-      let keys = { rowKey: 'row-key', batchKey: 'batch-key' }
+      const keys = { rowKey: 'row-key', batchKey: 'batch-key' }
 
       keyStore.store(keys)
       test.equal(keyStore.getRowKey(), keys.rowKey)
@@ -57,7 +57,7 @@ Test('Keys', keysTest => {
     })
 
     rowKeyTest.test('return null if no row key stored', test => {
-      let keyStore = Keys.create()
+      const keyStore = Keys.create()
       test.equal(keyStore.getRowKey(), null)
       test.end()
     })
@@ -67,9 +67,9 @@ Test('Keys', keysTest => {
 
   keysTest.test('getBatchKey should', batchKeyTest => {
     batchKeyTest.test('return stored batch key', test => {
-      let keyStore = Keys.create()
+      const keyStore = Keys.create()
 
-      let keys = { rowKey: 'row-key', batchKey: 'batch-key' }
+      const keys = { rowKey: 'row-key', batchKey: 'batch-key' }
 
       keyStore.store(keys)
       test.equal(keyStore.getBatchKey(), keys.batchKey)
@@ -77,7 +77,7 @@ Test('Keys', keysTest => {
     })
 
     batchKeyTest.test('return null if no batch key stored', test => {
-      let keyStore = Keys.create()
+      const keyStore = Keys.create()
       test.equal(keyStore.getBatchKey(), null)
       test.end()
     })

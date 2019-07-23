@@ -22,10 +22,10 @@ Test('TcpConnection', tcpConnTest => {
 
   tcpConnTest.test('close should', closeTest => {
     closeTest.test('call end method on socket', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
       socket.end = sandbox.stub()
 
-      let conn = TcpConnection.create(socket)
+      const conn = TcpConnection.create(socket)
       conn.close()
 
       test.ok(socket.end.calledOnce)
@@ -37,10 +37,10 @@ Test('TcpConnection', tcpConnTest => {
 
   tcpConnTest.test('pause should', pauseTest => {
     pauseTest.test('call pause method on socket', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
       socket.pause = sandbox.stub()
 
-      let conn = TcpConnection.create(socket)
+      const conn = TcpConnection.create(socket)
       conn.pause()
 
       test.ok(socket.pause.calledOnce)
@@ -52,10 +52,10 @@ Test('TcpConnection', tcpConnTest => {
 
   tcpConnTest.test('resume should', resumeTest => {
     resumeTest.test('call resume method on socket', test => {
-      let socket = new EventEmitter()
+      const socket = new EventEmitter()
       socket.resume = sandbox.stub()
 
-      let conn = TcpConnection.create(socket)
+      const conn = TcpConnection.create(socket)
       conn.resume()
 
       test.ok(socket.resume.calledOnce)
@@ -67,10 +67,10 @@ Test('TcpConnection', tcpConnTest => {
 
   tcpConnTest.test('receiving socket end should', receiveCloseTest => {
     receiveCloseTest.test('emit end event', test => {
-      let socket = new EventEmitter()
-      let endSpy = sandbox.spy()
+      const socket = new EventEmitter()
+      const endSpy = sandbox.spy()
 
-      let conn = TcpConnection.create(socket)
+      const conn = TcpConnection.create(socket)
       conn.on('end', endSpy)
 
       socket.emit('end')
@@ -84,12 +84,12 @@ Test('TcpConnection', tcpConnTest => {
 
   tcpConnTest.test('receving socket error should', receiveErrorTest => {
     receiveErrorTest.test('emit error event with existing error object', test => {
-      let socket = new EventEmitter()
-      let errorSpy = sandbox.spy()
+      const socket = new EventEmitter()
+      const errorSpy = sandbox.spy()
 
-      let socketErr = new Error('this is bad')
+      const socketErr = new Error('this is bad')
 
-      let conn = TcpConnection.create(socket)
+      const conn = TcpConnection.create(socket)
       conn.on('error', errorSpy)
 
       socket.emit('error', socketErr)
@@ -104,14 +104,14 @@ Test('TcpConnection', tcpConnTest => {
 
   tcpConnTest.test('receiving socket data should', receiveDataTest => {
     receiveDataTest.test('handle request and emit message event', test => {
-      let socket = new EventEmitter()
-      let messageSpy = sandbox.spy()
+      const socket = new EventEmitter()
+      const messageSpy = sandbox.spy()
 
-      let message = JSON.stringify({ id: 1, name: 'test' })
-      let sendBuffer = Fixtures.writeMessageToBufferWithLength(message)
-      let receiveBuffer = Fixtures.writeMessageToBuffer(message)
+      const message = JSON.stringify({ id: 1, name: 'test' })
+      const sendBuffer = Fixtures.writeMessageToBufferWithLength(message)
+      const receiveBuffer = Fixtures.writeMessageToBuffer(message)
 
-      let conn = TcpConnection.create(socket)
+      const conn = TcpConnection.create(socket)
       conn.on('message', messageSpy)
 
       socket.emit('data', sendBuffer)
@@ -122,23 +122,23 @@ Test('TcpConnection', tcpConnTest => {
     })
 
     receiveDataTest.test('handle multiple requests sent sequentially', test => {
-      let socket = new EventEmitter()
-      let messageSpy = sandbox.spy()
-      let receiveBuffers = []
+      const socket = new EventEmitter()
+      const messageSpy = sandbox.spy()
+      const receiveBuffers = []
 
-      let message = JSON.stringify({ id: 1, name: 'test' })
-      let sendBuffer = Fixtures.writeMessageToBufferWithLength(message)
+      const message = JSON.stringify({ id: 1, name: 'test' })
+      const sendBuffer = Fixtures.writeMessageToBufferWithLength(message)
       receiveBuffers.push(Fixtures.writeMessageToBuffer(message))
 
-      let message2 = JSON.stringify({ row: 5, key: 'key', value: 'val' })
-      let sendBuffer2 = Fixtures.writeMessageToBufferWithLength(message2)
+      const message2 = JSON.stringify({ row: 5, key: 'key', value: 'val' })
+      const sendBuffer2 = Fixtures.writeMessageToBufferWithLength(message2)
       receiveBuffers.push(Fixtures.writeMessageToBuffer(message2))
 
-      let message3 = JSON.stringify({ id: '1ab042bd-e098-4d96-ae8b-e07aefd04ca4', serviceName: 'service' })
-      let sendBuffer3 = Fixtures.writeMessageToBufferWithLength(message3)
+      const message3 = JSON.stringify({ id: '1ab042bd-e098-4d96-ae8b-e07aefd04ca4', serviceName: 'service' })
+      const sendBuffer3 = Fixtures.writeMessageToBufferWithLength(message3)
       receiveBuffers.push(Fixtures.writeMessageToBuffer(message3))
 
-      let conn = TcpConnection.create(socket)
+      const conn = TcpConnection.create(socket)
       conn.on('message', messageSpy)
 
       socket.emit('data', sendBuffer)
@@ -153,17 +153,17 @@ Test('TcpConnection', tcpConnTest => {
     })
 
     receiveDataTest.test('handle message split over multiple data events', test => {
-      let socket = new EventEmitter()
-      let messageSpy = sandbox.spy()
+      const socket = new EventEmitter()
+      const messageSpy = sandbox.spy()
 
-      let message = JSON.stringify({ id: '1ab042bd-e098-4d96-ae8b-e07aefd04ca4', serviceName: 'service' })
-      let sendBuffer = Fixtures.writeMessageToBufferWithLength(message)
-      let receiveBuffer = Fixtures.writeMessageToBuffer(message)
+      const message = JSON.stringify({ id: '1ab042bd-e098-4d96-ae8b-e07aefd04ca4', serviceName: 'service' })
+      const sendBuffer = Fixtures.writeMessageToBufferWithLength(message)
+      const receiveBuffer = Fixtures.writeMessageToBuffer(message)
 
-      let partialBuffer1 = sendBuffer.slice(0, 5)
-      let partialBuffer2 = sendBuffer.slice(5)
+      const partialBuffer1 = sendBuffer.slice(0, 5)
+      const partialBuffer2 = sendBuffer.slice(5)
 
-      let conn = TcpConnection.create(socket)
+      const conn = TcpConnection.create(socket)
       conn.on('message', messageSpy)
 
       socket.emit('data', partialBuffer1)
@@ -175,23 +175,23 @@ Test('TcpConnection', tcpConnTest => {
     })
 
     receiveDataTest.test('handle multiple messages split over multiple data events', test => {
-      let socket = new EventEmitter()
-      let messageSpy = sandbox.spy()
-      let receiveBuffers = []
+      const socket = new EventEmitter()
+      const messageSpy = sandbox.spy()
+      const receiveBuffers = []
 
-      let message = JSON.stringify({ id: '1ab042bd-e098-4d96-ae8b-e07aefd04ca4', serviceName: 'service' })
-      let sendBuffer = Fixtures.writeMessageToBufferWithLength(message)
+      const message = JSON.stringify({ id: '1ab042bd-e098-4d96-ae8b-e07aefd04ca4', serviceName: 'service' })
+      const sendBuffer = Fixtures.writeMessageToBufferWithLength(message)
       receiveBuffers.push(Fixtures.writeMessageToBuffer(message))
 
-      let message2 = JSON.stringify({ row: 5, key: 'key', value: 'val' })
-      let sendBuffer2 = Fixtures.writeMessageToBufferWithLength(message2)
+      const message2 = JSON.stringify({ row: 5, key: 'key', value: 'val' })
+      const sendBuffer2 = Fixtures.writeMessageToBufferWithLength(message2)
       receiveBuffers.push(Fixtures.writeMessageToBuffer(message2))
 
       // Append the beginning of the second buffer to the first buffer.
-      let partialBuffer1 = Fixtures.appendToBuffer(sendBuffer, sendBuffer2.slice(0, 5))
-      let partialBuffer2 = sendBuffer2.slice(5)
+      const partialBuffer1 = Fixtures.appendToBuffer(sendBuffer, sendBuffer2.slice(0, 5))
+      const partialBuffer2 = sendBuffer2.slice(5)
 
-      let conn = TcpConnection.create(socket)
+      const conn = TcpConnection.create(socket)
       conn.on('message', messageSpy)
 
       socket.emit('data', partialBuffer1)
@@ -205,21 +205,21 @@ Test('TcpConnection', tcpConnTest => {
     })
 
     receiveDataTest.test('handle multiple messages in one data event', test => {
-      let socket = new EventEmitter()
-      let messageSpy = sandbox.spy()
-      let receiveBuffers = []
+      const socket = new EventEmitter()
+      const messageSpy = sandbox.spy()
+      const receiveBuffers = []
 
-      let message = JSON.stringify({ id: '1ab042bd-e098-4d96-ae8b-e07aefd04ca4', serviceName: 'service' })
-      let sendBuffer = Fixtures.writeMessageToBufferWithLength(message)
+      const message = JSON.stringify({ id: '1ab042bd-e098-4d96-ae8b-e07aefd04ca4', serviceName: 'service' })
+      const sendBuffer = Fixtures.writeMessageToBufferWithLength(message)
       receiveBuffers.push(Fixtures.writeMessageToBuffer(message))
 
-      let message2 = JSON.stringify({ row: 5, key: 'key', value: 'val' })
-      let sendBuffer2 = Fixtures.writeMessageToBufferWithLength(message2)
+      const message2 = JSON.stringify({ row: 5, key: 'key', value: 'val' })
+      const sendBuffer2 = Fixtures.writeMessageToBufferWithLength(message2)
       receiveBuffers.push(Fixtures.writeMessageToBuffer(message2))
 
-      let combinedBuffer = Fixtures.appendToBuffer(sendBuffer, sendBuffer2)
+      const combinedBuffer = Fixtures.appendToBuffer(sendBuffer, sendBuffer2)
 
-      let conn = TcpConnection.create(socket)
+      const conn = TcpConnection.create(socket)
       conn.on('message', messageSpy)
 
       socket.emit('data', combinedBuffer)
@@ -232,12 +232,12 @@ Test('TcpConnection', tcpConnTest => {
     })
 
     receiveDataTest.test('not emit message event if sent data with no prefix header', test => {
-      let socket = new EventEmitter()
-      let messageSpy = sandbox.spy()
+      const socket = new EventEmitter()
+      const messageSpy = sandbox.spy()
 
-      let sendBuffer = Buffer.from('junk data')
+      const sendBuffer = Buffer.from('junk data')
 
-      let conn = TcpConnection.create(socket)
+      const conn = TcpConnection.create(socket)
       conn.on('message', messageSpy)
 
       socket.emit('data', sendBuffer)

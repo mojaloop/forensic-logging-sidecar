@@ -14,7 +14,7 @@ class Requests {
   start (func) {
     const id = this._generateId()
 
-    let request = this._existing[id] = Request.create()
+    const request = this._existing[id] = Request.create()
     request.build(() => func(id), this._timeout, () => delete this._existing[id])
 
     return this._getPromise(id)

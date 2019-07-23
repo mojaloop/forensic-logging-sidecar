@@ -32,7 +32,7 @@ exports.findForService = (serviceName, startTime, endTime) => {
 }
 
 const buildBatchData = (events) => {
-  let batchData = events.map(e => {
+  const batchData = events.map(e => {
     return {
       row: EventService.getSignableEvent(e),
       signature: e.signature

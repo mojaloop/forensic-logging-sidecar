@@ -28,7 +28,7 @@ Test('Batch service', serviceTest => {
 
     uuidStub = sandbox.stub()
 
-    Service = Proxyquire(`${src}/domain/batch`, { 'uuid4': uuidStub })
+    Service = Proxyquire(`${src}/domain/batch`, { uuid4: uuidStub })
 
     t.end()
   })
@@ -40,23 +40,23 @@ Test('Batch service', serviceTest => {
 
   serviceTest.test('create should', createTest => {
     createTest.test('create batch and update events', test => {
-      let sidecarId = Uuid()
-      let batchId = Uuid()
-      let eventIds = [1, 2]
-      let signingKey = 'DFDE22A3276FC520A24FBE5534EDADFE080D78375C4530E038EFCF6CA699228A'
-      let now = Moment()
+      const sidecarId = Uuid()
+      const batchId = Uuid()
+      const eventIds = [1, 2]
+      const signingKey = 'DFDE22A3276FC520A24FBE5534EDADFE080D78375C4530E038EFCF6CA699228A'
+      const now = Moment()
 
       uuidStub.returns(batchId)
 
-      let savedBatch = {}
+      const savedBatch = {}
       Model.create.returns(P.resolve(savedBatch))
 
-      let signature = 'signature'
+      const signature = 'signature'
       AsymmetricCrypto.sign.returns(signature)
 
       Moment.utc.returns(now)
 
-      let unbatchedEvents = [{ eventId: eventIds[0], sidecarId, sequence: 1, message: 'test1', signature: 'sig1', created: now }, { eventId: eventIds[1], sidecarId, sequence: 2, message: 'test2', signature: 'sig2', created: now }].map(e => {
+      const unbatchedEvents = [{ eventId: eventIds[0], sidecarId, sequence: 1, message: 'test1', signature: 'sig1', created: now }, { eventId: eventIds[1], sidecarId, sequence: 2, message: 'test2', signature: 'sig2', created: now }].map(e => {
         e.signable = { keyId: e.sidecarId, sequence: e.sequence, message: e.message, timestamp: e.created.toISOString() }
         return e
       })
@@ -66,7 +66,7 @@ Test('Batch service', serviceTest => {
       EventService.getUnbatchedEventsByIds.returns(P.resolve(unbatchedEvents))
       EventService.assignEventsToBatch.returns(P.resolve())
 
-      let batchData = JSON.stringify(unbatchedEvents.map(e => {
+      const batchData = JSON.stringify(unbatchedEvents.map(e => {
         return {
           row: e.signable,
           signature: e.signature
@@ -95,10 +95,10 @@ Test('Batch service', serviceTest => {
 
   serviceTest.test('findForService should', findForServiceTest => {
     findForServiceTest.test('find batches for timespan', test => {
-      let now = Moment()
-      let start = Moment(now).subtract(5, 'minutes')
+      const now = Moment()
+      const start = Moment(now).subtract(5, 'minutes')
 
-      let batches = [{ batchId: '1' }, { batchId: '2' }]
+      const batches = [{ batchId: '1' }, { batchId: '2' }]
       Model.findForService.returns(P.resolve(batches))
 
       const service = 'test-service'
@@ -114,10 +114,10 @@ Test('Batch service', serviceTest => {
     })
 
     findForServiceTest.test('convert dates to strings before calling model', test => {
-      let now = Moment()
-      let start = Moment(now).subtract(5, 'minutes')
+      const now = Moment()
+      const start = Moment(now).subtract(5, 'minutes')
 
-      let batches = [{ batchId: '1' }, { batchId: '2' }]
+      const batches = [{ batchId: '1' }, { batchId: '2' }]
       Model.findForService.returns(P.resolve(batches))
 
       const service = 'test-service'

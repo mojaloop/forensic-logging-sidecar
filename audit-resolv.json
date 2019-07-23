@@ -1,0 +1,29 @@
+{
+  "1065|@mojaloop/central-services-error-handling>@mojaloop/central-services-shared>winston>async>lodash": {
+    "ignore": 1
+  },
+  "1065|@mojaloop/central-services-shared>winston>async>lodash": {
+    "ignore": 1
+  },
+  "1065|istanbul>istanbul-api>async>lodash": {
+    "ignore": 1
+  },
+  "1065|sinon>@sinonjs/formatio>@sinonjs/samsam>lodash": {
+    "ignore": 1
+  },
+  "1065|sinon>@sinonjs/samsam>lodash": {
+    "ignore": 1
+  },
+  "1065|sinon>nise>@sinonjs/formatio>@sinonjs/samsam>lodash": {
+    "ignore": 1
+  },
+  "1065|@mojaloop/central-services-database>lodash": {
+    "ignore": 1
+  },
+  "786|@mojaloop/central-services-database>knex>liftoff>findup-sync>micromatch>braces": {
+    "ignore": 1
+  },
+  "782|@mojaloop/central-services-database>lodash": {
+    "ignore": 1
+  }
+}

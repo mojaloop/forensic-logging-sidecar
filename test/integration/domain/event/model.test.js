@@ -76,7 +76,7 @@ Test('events model', modelTest => {
       P.all([SidecarModel.create(sidecar), SidecarModel.create(sidecar2)])
         .then(() => P.all([Model.create(event), Model.create(event2), Model.create(event3), Model.create(event4)]))
         .then(createdEvents => {
-          let batch = { sidecarId, batchId: Uuid(), data: '', signature: '', created }
+          const batch = { sidecarId, batchId: Uuid(), data: '', signature: '', created }
           BatchModel.create(batch)
             .then(createdBatch => Model.updateEvents([event3.eventId, event4.eventId], { batchId: createdBatch.batchId }))
             .then(() => {
@@ -157,7 +157,7 @@ Test('events model', modelTest => {
       SidecarModel.create(sidecar)
         .then(() => P.all([Model.create(event), Model.create(event2), Model.create(event3)]))
         .then(createdEvents => {
-          let batch = { sidecarId, batchId: Uuid(), data: '', signature: '', created }
+          const batch = { sidecarId, batchId: Uuid(), data: '', signature: '', created }
           BatchModel.create(batch)
             .then(createdBatch => {
               Model.updateEvents(createdEvents.map(x => x.eventId), { batchId: createdBatch.batchId })

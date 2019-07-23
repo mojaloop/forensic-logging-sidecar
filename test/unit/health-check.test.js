@@ -25,15 +25,15 @@ Test('HealthCheck', healthCheckTest => {
 
   healthCheckTest.test('ping should', pingTest => {
     pingTest.test('perform a ping health check and return results', test => {
-      let eventCount = 50
+      const eventCount = 50
 
-      let now = Moment()
+      const now = Moment()
       Moment.utc.returns(now)
-      let startTime = Moment(now).subtract(1, 'hour')
+      const startTime = Moment(now).subtract(1, 'hour')
 
       EventService.getEventCountInTimespan.returns(P.resolve(eventCount))
 
-      let sidecar = { id: 'sidecar-id', version: '0.0.1', startTime }
+      const sidecar = { id: 'sidecar-id', version: '0.0.1', startTime }
 
       HealthCheck.ping(sidecar)
         .then(hc => {

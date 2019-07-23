@@ -59,7 +59,7 @@ class WebSocket extends EventEmitter {
         case 'ECONNREFUSED':
           Logger.info(`Error connecting to KMS, attempting to connect after sleeping ${this._reconnectInterval}ms`)
 
-          let self = this
+          const self = this
           this._reconnectTimerId = setTimeout(() => {
             self._connect()
           }, this._reconnectInterval)

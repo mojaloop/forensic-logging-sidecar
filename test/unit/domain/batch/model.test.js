@@ -29,8 +29,8 @@ Test('Batches model', modelTest => {
 
   modelTest.test('create should', createTest => {
     createTest.test('save payload and return new batch', test => {
-      let payload = { batchId: 'event-id', sidecarId: 'sidecar-id', data: 'test data', signature: 'test' }
-      let insertedBatch = { batchId: payload.batchId }
+      const payload = { batchId: 'event-id', sidecarId: 'sidecar-id', data: 'test data', signature: 'test' }
+      const insertedBatch = { batchId: payload.batchId }
 
       Db.batches.insert.returns(P.resolve(insertedBatch))
 
@@ -47,21 +47,21 @@ Test('Batches model', modelTest => {
 
   modelTest.test('findForService should', findForServiceTest => {
     findForServiceTest.test('find sidecar batches for a service and timespan', test => {
-      let now = Moment.utc()
-      let start = Moment.utc(now).subtract(5, 'minutes')
+      const now = Moment.utc()
+      const start = Moment.utc(now).subtract(5, 'minutes')
 
-      let service = 'test-service'
-      let startTime = start.toISOString()
-      let endTime = start.toISOString()
+      const service = 'test-service'
+      const startTime = start.toISOString()
+      const endTime = start.toISOString()
 
-      let batches = [{ batchId: '1' }, { batchId: '2' }]
+      const batches = [{ batchId: '1' }, { batchId: '2' }]
 
-      let builderStub = sandbox.stub()
-      let whereStub = sandbox.stub()
-      let andWhere1Stub = sandbox.stub()
-      let andWhere2Stub = sandbox.stub()
-      let selectStub = sandbox.stub()
-      let orderByStub = sandbox.stub()
+      const builderStub = sandbox.stub()
+      const whereStub = sandbox.stub()
+      const andWhere1Stub = sandbox.stub()
+      const andWhere2Stub = sandbox.stub()
+      const selectStub = sandbox.stub()
+      const orderByStub = sandbox.stub()
 
       builderStub.join = sandbox.stub()
 

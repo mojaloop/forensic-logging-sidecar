@@ -7,7 +7,7 @@ class TcpConnection extends EventEmitter {
   constructor (socket) {
     super()
 
-    let self = this
+    const self = this
     self._socket = socket
     self._matcher = BitSyntax.matcher('len:32/big-unsigned, message:len/binary, rest/binary')
 
@@ -16,7 +16,7 @@ class TcpConnection extends EventEmitter {
     self._socket.on('data', data => {
       buffer = appendToBuffer(buffer, data)
       while (true) {
-        let parsed = self._matcher(buffer)
+        const parsed = self._matcher(buffer)
         if (!parsed) break
 
         self.emit('message', parsed.message)

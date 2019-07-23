@@ -17,7 +17,7 @@ Test('KMS Requests', kmsReqsTest => {
     sandbox.stub(KmsRequest, 'create')
 
     uuidStub = sandbox.stub()
-    KmsRequests = Proxyquire(`${src}/kms/requests`, { 'uuid4': uuidStub })
+    KmsRequests = Proxyquire(`${src}/kms/requests`, { uuid4: uuidStub })
 
     t.end()
   })
@@ -29,8 +29,8 @@ Test('KMS Requests', kmsReqsTest => {
 
   kmsReqsTest.test('create should', createTest => {
     createTest.test('create new requests and set properties', test => {
-      let opts = { timeout: 1000 }
-      let reqs = KmsRequests.create(opts)
+      const opts = { timeout: 1000 }
+      const reqs = KmsRequests.create(opts)
 
       test.equal(reqs._timeout, opts.timeout)
       test.deepEqual(reqs._existing, {})
@@ -42,19 +42,19 @@ Test('KMS Requests', kmsReqsTest => {
 
   kmsReqsTest.test('start should', startTest => {
     startTest.test('create a new request and return promise', test => {
-      let id = 'id'
-      let timeout = 3000
+      const id = 'id'
+      const timeout = 3000
 
       uuidStub.returns(id)
 
-      let buildStub = sandbox.stub()
-      let req = { build: buildStub, promise: {} }
+      const buildStub = sandbox.stub()
+      const req = { build: buildStub, promise: {} }
       KmsRequest.create.returns(req)
 
-      let funcStub = sandbox.stub()
-      let requests = KmsRequests.create({ timeout })
+      const funcStub = sandbox.stub()
+      const requests = KmsRequests.create({ timeout })
 
-      let promise = requests.start(funcStub)
+      const promise = requests.start(funcStub)
 
       buildStub.callArg(0)
 
@@ -66,16 +66,16 @@ Test('KMS Requests', kmsReqsTest => {
     })
 
     startTest.test('remove request after finally func called', test => {
-      let id = 'id'
+      const id = 'id'
 
       uuidStub.returns(id)
 
-      let buildStub = sandbox.stub()
-      let req = { build: buildStub, promise: {} }
+      const buildStub = sandbox.stub()
+      const req = { build: buildStub, promise: {} }
       KmsRequest.create.returns(req)
 
-      let funcStub = sandbox.stub()
-      let requests = KmsRequests.create({ timeout: 1000 })
+      const funcStub = sandbox.stub()
+      const requests = KmsRequests.create({ timeout: 1000 })
 
       requests.start(funcStub)
       test.ok(requests._existing[id])
@@ -91,9 +91,9 @@ Test('KMS Requests', kmsReqsTest => {
 
   kmsReqsTest.test('exists should', existsTest => {
     existsTest.test('return true if request id exists', test => {
-      let id = 'id1'
+      const id = 'id1'
 
-      let requests = KmsRequests.create({ timeout: 1000 })
+      const requests = KmsRequests.create({ timeout: 1000 })
       requests._existing[id] = {}
 
       test.ok(requests.exists(id))
@@ -101,7 +101,7 @@ Test('KMS Requests', kmsReqsTest => {
     })
 
     existsTest.test('return false if request id doesn\'t exist', test => {
-      let requests = KmsRequests.create({ timeout: 1000 })
+      const requests = KmsRequests.create({ timeout: 1000 })
       requests._existing['id1'] = {}
 
       test.notOk(requests.exists('id2'))
@@ -113,13 +113,13 @@ Test('KMS Requests', kmsReqsTest => {
 
   kmsReqsTest.test('complete should', completeTest => {
     completeTest.test('resolve existing request with supplied value', test => {
-      let id = 'id1'
-      let resolveStub = sandbox.stub()
+      const id = 'id1'
+      const resolveStub = sandbox.stub()
 
-      let requests = KmsRequests.create({ timeout: 1000 })
+      const requests = KmsRequests.create({ timeout: 1000 })
       requests._existing[id] = { resolve: resolveStub }
 
-      let value = 'val'
+      const value = 'val'
       requests.complete(id, value)
 
       test.ok(resolveStub.calledWith(value))
@@ -127,7 +127,7 @@ Test('KMS Requests', kmsReqsTest => {
     })
 
     completeTest.test('throw error if request id doesn\'t exist', test => {
-      let requests = KmsRequests.create({ timeout: 1000 })
+      const requests = KmsRequests.create({ timeout: 1000 })
       requests._existing['id1'] = { }
 
       try {
