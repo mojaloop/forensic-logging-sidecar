@@ -19,5 +19,11 @@
   },
   "1065|@mojaloop/central-services-database>lodash": {
     "ignore": 1
+  },
+  "786|@mojaloop/central-services-database>knex>liftoff>findup-sync>micromatch>braces": {
+    "ignore": 1
+  },
+  "782|@mojaloop/central-services-database>lodash": {
+    "ignore": 1
   }
 }
